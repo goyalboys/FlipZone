@@ -68,9 +68,14 @@ class UserController extends Controller
                 //$user=user::where('phone_number',$request->phone_number)->get();
                 //echo $user;
                 session(['active_user' =>$request->phone_number]);
+                
+                $type_user=user::where('phone_number',$request->phone_number)->get()[0]->type_of_user;
+                session(['type_user' =>$type_user]);
                 //echo user::where('phone_number',$request->phone_number)->get(['type_of_user']);
-                if(user::where('phone_number',$request->phone_number)->get()[0]->type_of_user=='merchant')
+                if($type_user=='merchant')
+                {
                     return redirect('merchant_dashboard');
+                }
                 else{
                     return redirect('/');
                 }

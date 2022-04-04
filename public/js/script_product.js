@@ -30,12 +30,13 @@
                 temp+='<div class="row p-4">';
 
                 temp+='<div class="col-sm-4 mt-4">\
+                <a href="product/'+item.Id+'" style="color:black;">\
                     <div class="box-design">\
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
                         price:'+item.price+'<br>\
-                    </div>\
+                    </div></a>\
                 </div>'                    
                 
                 if(count%3==2)
@@ -74,12 +75,13 @@
                 temp+='<div class="row p-4">';
 
                 temp+='<div class="col-sm-4 mt-4">\
+                <a href="product/'+item.Id+'" style="color:black;">\
                     <div class="box-design">\
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
                         price:'+item.price+'<br>\
-                    </div>\
+                    </div></a>\
                 </div>';                    
                 
                 if(count%3==2)
@@ -119,12 +121,13 @@
                 temp+='<div class="row p-4">';
 
                 temp+='<div class="col-sm-4 mt-4">\
+                <a href="product/'+item.Id+'" style="color:black;">\
                     <div class="box-design">\
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
                         price:'+item.price+'<br>\
-                    </div>\
+                    </div></a>\
                 </div>';                    
                 
                 if(count%3==2)
@@ -165,12 +168,13 @@
                 temp+='<div class="row p-4">';
 
                 temp+='<div class="col-sm-4 mt-4">\
+                <a href="product/'+item.Id+'" style="color:black;">\
                     <div class="box-design">\
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
                         price:'+item.price+'<br>\
-                    </div>\
+                    </div></a>\
                 </div>';                    
                 
                 if(count%3==2)

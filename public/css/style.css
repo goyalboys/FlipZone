@@ -353,15 +353,13 @@ input::-moz-range-track {
   position: relative;
   width: 80%;
   height: 100%;
-  background-color: aliceblue;
+  background-color: rgb(252, 252, 252);
   margin: auto;
   padding: 20px;
 
 }
 #row1{
-
   height: 100%;
-
 }
 
 #container1{
@@ -380,3 +378,109 @@ input::-moz-range-track {
 }
 
 
+.box-content{
+  text-align: center;
+  position: relative;
+  width:100%;
+  padding: 40px;
+  background-color: rgb(255, 255, 255);
+  height: 450px;
+  margin-top: 50px;
+  box-shadow: 3px 3px 5px 7px rgb(112, 112, 114);
+}
+.product-content{
+  text-align:justify;
+  position: relative;
+  width:100%;
+  padding: 40px;
+  background-color: rgb(255, 255, 255);
+  height: 450px;
+  margin-top: 50px;
+
+}
+#column3{
+  width: 30%;
+  position: relative;
+  height: 100%;
+ background-color: rgb(58, 55, 55);
+}
+#column3{
+  position: relative;
+  width: 70%;
+  height: 100%;
+  background-color: aliceblue;
+  margin: auto;
+  padding: 20px;
+
+}
+.billing-us{
+  font-size: 40px;
+  text-align: center;
+  background-color: rgb(231, 204, 204);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: rgb(207, 35, 35);
+}
+
+.order-history{
+  text-align: center;
+  position: relative;
+  width:60%;
+
+  padding: 40px;
+  background-color: rgb(255, 255, 255);
+  height: 100%;
+  margin-top: 50px;
+  margin-left:calc(20%);
+  margin-right:calc(20%);
+  box-shadow: 3px 3px 5px 7px rgb(112, 112, 114);
+
+}
+
+
+#myUL {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  z-index: 1;
+}
+#myUL li a {
+  border: 1px solid #ddd;
+  margin-top: -1px; /* Prevent double borders */
+  background-color: #f6f6f6;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 18px;
+  color: black;
+  z-index: 1;
+  display: block;
+}
+
+#myUL li a:hover:not(.header) {
+  background-color: #eee;
+}
+.cart-history{
+  text-align: center;
+  position: relative;
+  width:60%;
+  padding: 40px;
+  background-color: rgb(255, 255, 255);
+  height: 100%;
+  margin-top: 50px;
+  margin-left:calc(20%);
+  margin-right:calc(20%);
+  box-shadow: 3px 3px 5px 7px rgb(112, 112, 114);
+  margin-bottom: 50px;
+}
+
+.cartbuy-content{
+  text-align: center;
+  position: relative;
+  width:100%;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+  margin-bottom: 6px;
+  height:100px;
+  box-shadow: 3px 3px 5px 7px rgb(112, 112, 114);
+}

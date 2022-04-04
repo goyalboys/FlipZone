@@ -48,13 +48,16 @@
     <div class="row p-4">
     @endif
     <div class="col-sm-3 mt-4">
-        <div class="box-design">
-            <img src="../storage/{{$product->image_path}}" height='160px' width='100%' style="position: relative;" id="image-register""> 
-            {{$product->company_name}}
-            {{$product->product_name}}<br>
-            <hr>
-            price:{{$product->price}}<br>
-        </div>
+        <a href="product/{{$product->Id}}" style="color:black;">
+            <div class="box-design">
+                <img src="../storage/{{$product->image_path}}" height='160px' width='100%' style="position: relative;" id="image-register""> 
+                {{$product->company_name}}
+                {{$product->product_name}}<br>
+                <hr>
+                price:<del>{{$product->price}}</del>
+                {{$product->price-($product->price*$product->discount/100)}}<br>
+            </div>
+        </a>
     </div>
     @if($count%4==3)
         </div>
@@ -70,10 +73,10 @@
         </div>
  @endif
  
-  
+  <br>
 
     <br>
-<div style="width:100%; height:200px;  background-color:rgb(100, 93, 93);">
+<div style="width:100%; height:150px;  background-color:rgb(100, 93, 93);">
 
 </div>
 <div style="width:100%; height:50px;  background-color:black;">

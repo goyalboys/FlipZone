@@ -12,7 +12,7 @@ class FlipZoneController extends Controller
        
         //$filename= user::where('id',7)->get()[0]['image_path'];
         //echo storage_public('app/' . $filename);
-        return view('main',['products'=>products::all()]);
+        return view('main',['products'=>products::all()->take(4)]);
       /*  try{
             echo user::all();
             throw new Exception("hello");

@@ -22,7 +22,7 @@
          <label>User Type: </label><br>
             <select name="type_of_user" >
              <option value="merchant">Merchant</option>
-             <option value="user" selected>User</option>
+             <option value="user" selected>Customer</option>
             </select>
             <br>
             <label>Name</label><br>
@@ -31,7 +31,7 @@
                     <div id='warning'>{{ $errors->first('name') }}</div>
                 @endif
             <label>Email</label><br>
-            <input type="text" name="email_id" value="{{ old('email') }}" autocomplete="off">
+            <input type="email" name="email_id" value="{{old('email_id') }}" autocomplete="off">
             @if($errors->has('email_id'))
                     <div id='warning'>{{ $errors->first('email_id') }}</div>
                 @endif

@@ -7,7 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 class CreateUserDetails extends Migration
 {
     public function up()
-
     {
         Schema::create('User_Details', function (Blueprint $table) {
             $table->engine = 'InnoDB';
@@ -15,6 +14,7 @@ class CreateUserDetails extends Migration
             $table->string('email_id')->unique();
             $table->string('password');
             $table->string('gender');
+            $table->string('address')->default("");
             $table->unsignedBigInteger('phone_number')->primary();
             $table->string('type_of_user');
         });

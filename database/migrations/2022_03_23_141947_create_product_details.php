@@ -10,8 +10,8 @@ class CreateProductDetails extends Migration
     {
         
         Schema::create('Product_Details', function (Blueprint $table) {
-            $table->increments('Id');
             $table->engine = 'InnoDB';
+            $table->increments('Id');
             $table->string('product_name');
             $table->string('description');
             $table->string('company_name');
@@ -21,7 +21,7 @@ class CreateProductDetails extends Migration
             $table->unsignedBigInteger('price');
             $table->string('quantity');
             $table->string('image_path');
-            $table->string('merchant_phone_number');
+            $table->unsignedBigInteger('merchant_phone_number');
         });
         Schema::enableForeignKeyConstraints();
         Schema::table('Product_Details', function (Blueprint $table) {
