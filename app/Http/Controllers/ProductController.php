@@ -11,33 +11,33 @@ class ProductController extends Controller
         $companies=array('Arrow','peter England','Van Heusan','Zodiac','Louise Phillipe','park Avenue');
         $offers=array('Summer Sale','At Low Cost Emi');
         $discounts=array("10%",'20%',"30%","40%",'50%',"60%",'70%',"80%","90%");
-        return view('products',['products'=>products::all(),'companies'=>$companies,'offers'=>$offers,'discounts'=>$discounts]);
+        return view('products',['products'=>products::all()->where('quantity','>','0'),'companies'=>$companies,'offers'=>$offers,'discounts'=>$discounts]);
 
     }
     function filterApplyPrice(Request $req)
     { 
-        $products=products::all()->where('price','>',$req['price1'])->where('price','<',$req['price2']);       
+        $products=products::all()->where('price','>',$req['price1'])->where('price','<',$req['price2'])->where('quantity','>','0');       
         return response()->json(['products' => $products]);
     }
 
     function lowtohigh(Request $req)
     {
-        $products=products::orderBy('price')->where('price','>',$req['price1'])->where('price','<',$req['price2'])->get();      
+        $products=products::orderBy('price')->where('price','>',$req['price1'])->where('price','<',$req['price2'])->where('quantity','>','0')->get();      
         return response()->json(['products' => $products]);
     }
     function hightolow(Request $req)
     {
-        $products=products::orderBy('price','desc')->where('price','>',$req['price1'])->where('price','<',$req['price2'])->get();      
+        $products=products::orderBy('price','desc')->where('price','>',$req['price1'])->where('price','<',$req['price2'])->where('quantity','>','0')->get();      
         return response()->json(['products' => $products]);
     }
     function rating(Request $req)
     {
-        $products=products::orderBy('rating','desc')->where('price','>',$req['price1'])->where('price','<',$req['price2'])->get();      
+        $products=products::orderBy('rating','desc')->where('price','>',$req['price1'])->where('price','<',$req['price2'])->where('quantity','>','0')->get();      
         return response()->json(['products' => $products]);
     }
     function product($Id)
     {
-        $product=products::where('Id',$Id)->get();
+        $product=products::where('Id',$Id)->where('quantity','>','0')->get();
         return view('product',['product'=>$product]);
     }
 

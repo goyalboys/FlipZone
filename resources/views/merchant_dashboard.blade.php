@@ -10,7 +10,21 @@
         </div>
     </div>
     <div id="column2">
+        <div class="row">
+            <div class="col-sm-4">
 
+            @foreach($problems as $problem)
+            <b>Name:</b>{{$problem->name}}<br>
+            <b>Phone:</b>{{$problem->phone}}<br>
+            <b>Subject:</b>{{$problem->subject}}<br>
+            <b>Problem:</b>{{$problem->problem}}<br>
+            </div>
+            <div class="col-sm-4">
+                <a href="../resolved/{{$problem->contactId}}"><button type="button" class="btn btn-primary"  > Resolved</button></a>
+            </div>
+        </div>
+        <hr>
+        @endforeach
   </div>
 </div>
 @endsection

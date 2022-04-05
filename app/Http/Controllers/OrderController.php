@@ -67,7 +67,7 @@ class OrderController extends Controller
         catch(Exception $e)
         {
             dd($e->getMessage());
-            echo "error in deleting product";
+            echo "error in order product";
         }
     }
      function checkOutcart(){
@@ -120,8 +120,12 @@ class OrderController extends Controller
                     $orderTable->phone_no =$request->phone_number;
                     $orderTable->product_id=$productId;
                     $orderTable->added_on=Carbon::now();
-                    $orderTable->save();
-                    products::where('Id',$productId)->update(['quantity'=>$product[0]->quantity-1]);
+                    if(($product[0]->quantity-1)>=0)
+                    {
+                        $orderTable->save();
+                        products::where('Id',$productId)->update(['quantity'=>$product[0]->quantity-1]);
+                    }
+
                 }
 
             }
