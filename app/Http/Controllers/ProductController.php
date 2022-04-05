@@ -27,7 +27,6 @@ class ProductController extends Controller
     }
     function hightolow(Request $req)
     {
-        //$products=products::all()->where('price','>',$req['price1'])->where('price','<',$req['price2'])->orderBy('price','desc')->get(); 
         $products=products::orderBy('price','desc')->where('price','>',$req['price1'])->where('price','<',$req['price2'])->get();      
         return response()->json(['products' => $products]);
     }
@@ -39,14 +38,12 @@ class ProductController extends Controller
     function product($Id)
     {
         $product=products::where('Id',$Id)->get();
-        //print_r($product[0]);
         return view('product',['product'=>$product]);
     }
 
     function searchProduct(Request $request)
     {
         $value= $request['value'];
-        //$value="hi";
         $products=products::where('product_name','like','%'.$value.'%')->orWhere('company_name', 'like', '%'.$value.'%')->orWhere('description', 'like', '%'.$value.'%')->get();
         return response()->json(['item' => $products]);
     }

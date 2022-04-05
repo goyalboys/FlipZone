@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use App\ProductDetail;
 use App\OrderDetail;
 use File;
+Use Exception;
+
 class DashboardProductController extends Controller
 {
     function presentUser(){
@@ -16,106 +18,154 @@ class DashboardProductController extends Controller
     //
     function addProduct(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'product_name' => 'required|max:200',
-            'description' => 'required',
-            'price'=> 'required|integer',
-            'quantity' => 'required|max:99|integer',
-            'discount' => 'required|integer|max:99',
-            'company_name'=>'required',
-            'image'=>'required',
-            'offer'=>'required',
-        ]);
+        try{
+            $validator = Validator::make($request->all(), [
+                'product_name' => 'required|max:200',
+                'description' => 'required',
+                'price'=> 'required|integer',
+                'quantity' => 'required|max:99|integer',
+                'discount' => 'required|integer|max:99',
+                'company_name'=>'required',
+                'image'=>'required',
+                'offer'=>'required',
+            ]);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+            echo "Error in  add product validator";
+        }
         if($validator->fails())
         {
-            return redirect('add_product_details')
-                            -> withInput()
-                            -> withErrors($validator);
+            try{
+                return redirect('add_product_details')-> withInput()-> withErrors($validator);
+            }
+            catch(Exception $e)
+            {
+                dd($e->getMessage());
+                echo "error  add product validator  fails in Redirect";
+            }
         }else
         {
-            $product_table=new ProductDetail;  
-              
-            $product_table->description =$request->description;
-            $product_table->product_name =$request->product_name;
-            $product_table->company_name =$request->company_name;
-            $product_table->offer =$request->offer;
-            $product_table->discount =$request->discount;
-            $product_table->price =$request->price;
-            $product_table->quantity =$request->quantity;
-            $product_table->merchant_phone_number =session('active_user');
-            //$product_table->image_path =$request->image;
-            //echo $request->file('image');
-            //echo"<br>";
-            $request->image->store('public');
-            $product_table->image_path= $request->image->hashName();
-            $product_table->save();
-            return redirect('productdetails')->with('success',"Done!!");
+            try{
+                $productTable=new ProductDetail;
+                $productTable->description =$request->description;
+                $productTable->product_name =$request->product_name;
+                $productTable->company_name =$request->company_name;
+                $productTable->offer =$request->offer;
+                $productTable->discount =$request->discount;
+                $productTable->price =$request->price;
+                $productTable->quantity =$request->quantity;
+                $productTable->merchant_phone_number =session('active_user');
+                $request->image->store('public');
+                $productTable->image_path= $request->image->hashName();
+                $productTable->save();
+                return redirect('productdetails')->with('success',"Done!!");
+            }
+            catch(Exception $e){
+                dd($e->getMessage());
+                echo "error in adding product in database";
+
+            }
         }
     }
 
     function productDetails()
     {
-        $product=Productdetail::all()->where('merchant_phone_number',session('active_user'));
-        //echo "hi";
-        //$product=OrderDetail::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')
-        //->where('merchant_phone_number',session('active_user'))->get();
-        //echo $product;
-
-        return view('productdetails',['products'=>$product]);
-
+        try{
+            $product=Productdetail::all()->where('merchant_phone_number',session('active_user'));
+            return view('productdetails',['products'=>$product]);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+            echo "error in showing product details";
+        }
     }
 
     function orderReceived()
     {
-        //echo "hi";
-        $product=OrderDetail::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')
-        ->where('merchant_phone_number',session('active_user'))->get();
-        //echo $product;
-        return view('order_receive',['products'=>$product]);
+        try{
+            $product=OrderDetail::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')
+            ->where('merchant_phone_number',session('active_user'))->get();
+            return view('order_receive',['products'=>$product]);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+            echo "error in order received";
+        }
     }
 
     function editProductView(Request $request,$id)
     {
-        //echo $id;
-        $product=ProductDetail::all()->where('Id',$id);
-        //echo $product;
-        return view('edit_product_details',['product'=>$product,'id'=>$id]);
-
+        try{
+            $product=ProductDetail::all()->where('Id',$id);
+            return view('edit_product_details',['product'=>$product,'id'=>$id]);
+        }
+        catch(exception $e)
+        {
+            dd($e->getMessage());
+            echo "error in showing clicked product view";
+        }
     }
 
     function editProductDetail(Request $request,$id)
     {
-        echo "hi";
-        $validator = Validator::make($request->all(), [
-            'product_name' => 'required|max:200',
-            'description' => 'required',
-            'price'=> 'required|integer',
-            'quantity' => 'required|max:99|integer',
-            'discount' => 'required|integer|max:99',
-            'company_name'=>'required',
-            'offer'=>'required',
-        ]);
+        try{
+            $validator = Validator::make($request->all(), [
+                'product_name' => 'required|max:200',
+                'description' => 'required',
+                'price'=> 'required|integer',
+                'quantity' => 'required|max:99|integer',
+                'discount' => 'required|integer|max:99',
+                'company_name'=>'required',
+                'offer'=>'required',
+            ]);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+            echo "error in validator of edit product detail";
+        }
         if($validator->fails())
         {
-            return redirect('editproduct/$request->id')
-                            -> withInput()
-                            -> withErrors($validator);
+            try{
+                return redirect('editproduct/$request->id')-> withInput()-> withErrors($validator);
+            }
+            catch(Exception $e)
+            {
+                dd($e->getMessage());
+                echo "redirection edit product  request id ";
+            }
         }
         else
         {
-           // $product_table=new ProductDetail;  
+            try{
             ProductDetail::where('Id',$id)->update(['description'=>$request->description,'product_name'=>$request->product_name,'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,'quantity'=>$request->quantity]);
             return redirect('productdetails')->with('success',"Done!!");
+            }
+            catch(Exception $e)
+            {
+                dd($e->getMessage());
+                echo "error in updating product details";
+            }
         }
-    
     }
 
     function deleteProduct($id)
     {
-        $image_path = "storage/".ProductDetail::where('Id', $id)->get(['image_path'])[0]->image_path;
+        try{
+        $imagePath = "storage/".ProductDetail::where('Id', $id)->get(['image_path'])[0]->imagePath;
         ProductDetail::where('Id', $id)->delete();
-            File::delete($image_path);
+            File::delete($imagePath);
         return redirect('productdetails')->with('success',"Done!!");
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+            echo "error in deleting product";
+        }
     }
 
 }

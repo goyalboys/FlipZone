@@ -14,7 +14,7 @@
     </div>
     <div id="column4">
             <div class="billing-us">Billing Details</div>
-        <form class="row g-3" name="myForm" method="post" action='/{{$product[0]->Id}}/order_product' enctype="multipart/form-data">
+        <form class="row g-3" name="myForm" method="post" action='../order_product/{{$product[0]->Id}}/' enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="col-md-6">
                 <label class="form-label">Name</label>

@@ -26,7 +26,7 @@
                 Quantity:{{$product->quantity}}<br>
                 Price: {{$product->price}}<br>
                 
-                    <h4>price:{{$product->price-($product->price*$product->discount/100)}}<br></h4>
+                    <h4>Price:{{$product->price-($product->price*$product->discount/100)}}<br></h4>
                 </div>
                 <div class="col-sm-4">
                     <div style="text-align:center;">

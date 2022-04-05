@@ -21,7 +21,18 @@
                     {{$order->pincode}}
                     {{$order->city}}
                     {{$order->state}}<br>
-                    <h4>price:{{$order->price-($order->price*$order->discount/100)}}<br></h4>
+                    <h4>Price:{{$order->price-($order->price*$order->discount/100)}}<br></h4>
+                </div>
+                <div class="col-sm-4">
+                    <div style="text-align:center;">
+                        <a href="#"> 
+
+                            <button type="button" class="btn btn-primary"  >
+                                Cancel Order
+                            </button>
+                        </a>
+                    </div>
+                    
                 </div>
             </div>
             <hr>

@@ -6,23 +6,15 @@ use Illuminate\Http\Request;
 
 class FlipZoneController extends Controller
 {
-    //
     function showContent()
     {
-       
-        //$filename= user::where('id',7)->get()[0]['image_path'];
-        //echo storage_public('app/' . $filename);
-        return view('main',['products'=>products::all()->take(4)]);
-      /*  try{
-            echo user::all();
-            throw new Exception("hello");
+        try{
+            return view('main',['products'=>products::all()->take(4)]);
         }
         catch(Exception $e)
         {
-            echo "hello";
+            dd($e->getMessage());
+            echo "error in showing content to main page";
         }
-        
-        */
-
     }
 }

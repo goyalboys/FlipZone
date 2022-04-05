@@ -10,35 +10,64 @@ class CartController extends Controller
     //
     function cart($id)
     {
-        $cart_table=new CartDetail;   
-        $quantity_cart = CartDetail::where('product_id',$id)->get();
-        //$quantity_product = ProductDetail::where('Id',$id)->get();
-        echo count($quantity_cart);
-        if(count($quantity_cart)==0)
+        try{
+            $cartTable=new CartDetail;
+            $quantityCart = CartDetail::where('product_id',$id)->get();
+        }
+        catch(Exception $e)
         {
-            $cart_table->customercart_phone=session('active_user');
-            $cart_table->product_id=$id;
-            $cart_table->quantity=1;
-            $cart_table->save();
+            echo "cart detail error in product id";
+            dd($e->getMessage());
+
+        }
+        if(count($quantityCart)==0)
+        {
+            try{
+                $cartTable->customercart_phone=session('active_user');
+                $cartTable->product_id=$id;
+                $cartTable->quantity=1;
+                $cartTable->save();
+            }
+            catch(Exception $e)
+            {
+                echo "error in adding product in cart";
+                dd($e->getMessage());
+                
+            }
         }
         else{
-            $quantity_cart[0]->quantity+=1;
-            $q=$quantity_cart[0]->quantity;
-             CartDetail::where('product_id',$id)->update(['quantity'=>$q]);
-             
+            try{
+                $quantityCart[0]->quantity+=1;
+                $q=$quantityCart[0]->quantity;
+                CartDetail::where('product_id',$id)->update(['quantity'=>$q]); 
+            }
+            catch(Exception $e)
+            {
+                dd($e->getMessage());
+                echo "error in updating quantity";
+            }
         }
-        //$q=$quantity_product[0]->quantity;
-        return redirect("product/$id")->with('success',"Added to cart!!");
+        try{
+            return redirect("product/$id")->with('success',"Added to cart!!");
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+            echo "error in redirection to product id";
+        }
     }
-
     function cartItems()
     {
-        $product_cart= CartDetail::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')
-        ->select('Product_Details.product_name','Product_Details.company_name','Product_Details.offer','Product_Details.image_path','Cart_Details.quantity',
-        'Product_Details.price','Product_Details.discount')
-        ->get();
-        //echo $product_cart;
-        //$product_cart = CartDetail::where('customercart_phone',session('active_user'))->get();
-        return view('cart',['product_cart'=>$product_cart]);
+        try{
+            $productCart= CartDetail::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')
+            ->select('Product_Details.product_name','Product_Details.company_name','Product_Details.offer','Product_Details.image_path','Cart_Details.quantity',
+            'Product_Details.price','Product_Details.discount')->get();
+            return view('cart',['product_cart'=>$productCart]);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+            echo "error in showing cart items";
+        }
     }
 }
