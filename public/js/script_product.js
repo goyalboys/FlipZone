@@ -35,7 +35,7 @@
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
-                        price:'+item.price+'<br>\
+                        price:<del>'+item.price+  '</del>  '+(item.price-(item.price*item.discount/100))+'<br>\
                     </div></a>\
                 </div>'                    
                 
@@ -80,8 +80,8 @@
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
-                        price:'+item.price+'<br>\
-                    </div></a>\
+                        price:<del>'+item.price+  '</del>  '+(item.price-(item.price*item.discount/100))+'<br>\
+                        </div></a>\
                 </div>';                    
                 
                 if(count%3==2)
@@ -126,8 +126,8 @@
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
-                        price:'+item.price+'<br>\
-                    </div></a>\
+                        price:<del>'+item.price+  '</del>  '+(item.price-(item.price*item.discount/100))+'<br>\
+                        </div></a>\
                 </div>';                    
                 
                 if(count%3==2)
@@ -173,7 +173,7 @@
                         <img src="../storage/'+item.image_path+'" height="160px" width="100%" style="position: relative;" id="image-register""> \
                         '+item.company_name +item.product_name+'<br>\
                         <hr>\
-                        price:'+item.price+'<br>\
+                        price:<del>'+item.price+  '</del>  '+(item.price-(item.price*item.discount/100))+'<br>\
                     </div></a>\
                 </div>';                    
                 

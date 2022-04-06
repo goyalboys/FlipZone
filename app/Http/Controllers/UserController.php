@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\UserDetail;
 use Illuminate\Support\Facades\Hash;
-use App\UserDetail as user;
 class UserController extends Controller
 {
     function userRegistration(Request $request)
@@ -34,15 +33,13 @@ class UserController extends Controller
             }
         }else
         {
-            try{
-                $userTable=new UserDetail;    
-                $userTable->name =$request->name;
-                $userTable->email_id =$request->email_id;
-                $userTable->phone_number =$request->phone_number;
-                $userTable->password=Hash::make($request->password);
-                $userTable->gender =$request->gender;
-                $userTable->type_of_user =$request->type_of_user;
-                $userTable->save();
+            try{  
+                UserDetail::addUser(['name' =>$request->name,
+                'email_id' =>$request->email_id,
+                'phone_number' =>$request->phone_number,
+                'password'=>Hash::make($request->password),
+                'gender' =>$request->gender,
+                'type_of_user' =>$request->type_of_user]);
                 return redirect('login')->with('success',"Done!!");
             }
             catch(Exception $e)
@@ -83,13 +80,12 @@ class UserController extends Controller
         }else
         {
             try{
-                $hashedPassword= user::where('phone_number',$request->phone_number)->get();
+                $hashedPassword= UserDetail::hashedPassword($request->phone_number);
                 $normalPassword= $request->password;
-                $hashedPassword=$hashedPassword[0]['password'];
                 if(Hash::check($normalPassword,$hashedPassword))
                 {
                     session(['active_user' =>$request->phone_number]);
-                    $type_user=user::where('phone_number',$request->phone_number)->get()[0]->type_of_user;
+                    $type_user=UserDetail::typeOFuser($request->phone_number);
                     session(['type_user' =>$type_user]);
                     if($type_user=='merchant')
                     {

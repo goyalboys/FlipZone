@@ -48,10 +48,10 @@ Route::group( ['middleware'=>'protectedPages'],function(){
     Route::get('checkout/{Id}','OrderController@checkOut');
     Route::get('cart/{Id}','CartController@cart');
     Route::get('cart','CartController@cartItems');
-    Route::get('checkoutcart','OrderController@checkOutcart');
+    Route::get('checkoutcart','CartController@checkOutcart');
     Route::post('order_products','OrderController@ordersCheckout');
     Route::get('productdetails','DashboardProductController@productDetails');
-    Route::get('order_receive','DashboardProductController@orderReceived');
+    Route::get('order_receive','OrderController@orderReceived');
     Route::post('edit_product_details/{id}','DashboardProductController@editProductDetail');
     Route::get('editproduct/{id}','DashboardProductController@editProductView');
     Route::get('deleteproduct/{id}','DashboardProductController@deleteProduct');
@@ -60,6 +60,9 @@ Route::group( ['middleware'=>'protectedPages'],function(){
         ContactDetail::where('contactId',$id)->delete();
         return redirect('merchant_dashboard');
     });
+    Route::get('cancel_order/{id}','OrderController@cancelOrder');
+    Route::get('removefromcart/{id}','CartController@removeFromcart');
+
 
 });
 

@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div style="text-align:center;">
-                        <a href="#"> 
+                        <a href="cancel_order/{{$order->orderId}}"> 
 
                             <button type="button" class="btn btn-primary"  >
                                 Cancel Order

@@ -31,7 +31,7 @@
                     <div id='warning'>{{ $errors->first('name') }}</div>
                 @endif
             <label>Email</label><br>
-            <input type="email" name="email_id" value="{{old('email_id') }}" autocomplete="off">
+            <input type="text" name="email_id" value="{{old('email_id') }}" autocomplete="off">
             @if($errors->has('email_id'))
                     <div id='warning'>{{ $errors->first('email_id') }}</div>
                 @endif

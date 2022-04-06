@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\ProductDetail as products;
+use App\ProductDetail;
 use App\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -9,19 +9,16 @@ use Carbon\Carbon;
 Use App\CartDetail;
 class OrderController extends Controller
 {
-    //
     function checkOut($Id)
     {
         try{
-            $product=products::where('Id',$Id)->get();
+            $product=ProductDetail::productIddetail($Id);
             return view('checkout',['product'=>$product]);
         }
         catch(Exception $e)
         {
             dd($e->getMessage());
-            echo "error in checkout product";
         }
-
     }
     function orderCheck(Request $request,$Id)
     {
@@ -38,52 +35,25 @@ class OrderController extends Controller
             return redirect('checkout/'.$Id)-> withInput()-> withErrors($validator);
         }else
         {
-            $product=products::where('Id',$Id)->get();
-            $orderTable=new OrderDetail;  
-            $orderTable->name =$request->name;
-            $orderTable->address =$request->address;
-            $orderTable->pincode =$request->pincode;
-            $orderTable->city =$request->city;
-            $orderTable->state =$request->state;
-            $orderTable->price =$product[0]->price-($product[0]->price*$product[0]->discount/100);
-            $orderTable->payment_mode =$request->cash_payment;
-            $orderTable->customer_phone =session('active_user');
-            $orderTable->phone_no =$request->phone_number;
-            $orderTable->product_id=$Id;
-            $orderTable->added_on=Carbon::now();
-            $orderTable->save();
-            products::where('Id',$Id)->update(['quantity'=>$product[0]->quantity-1]);
+            $product=ProductDetail::productIddetail($Id);  
+            $price=$product[0]->price-($product[0]->price*$product[0]->discount/100);
+            OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$Id,'added_on'=>Carbon::now()]);
+            ProductDetail::updateproductQuantity($Id,['quantity'=>$product[0]->quantity-1]);
             return redirect('order_successful')->with('success',"Done!!");
         }
     }
-
-
     function orderHistory()
     {
         try{
-            $orders=OrderDetail::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')->where('customer_phone',session('active_user'))->get();
+            $orders=OrderDetail::ordersInnerJoinproductdetails(session('active_user'));
             return view('order_history',['orders'=>$orders]);
         }
         catch(Exception $e)
         {
             dd($e->getMessage());
-            echo "error in order product";
         }
     }
-     function checkOutcart(){
-        $product_cart= CartDetail::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')
-        ->select('Product_Details.product_name','Product_Details.company_name','Product_Details.offer','Product_Details.image_path','Cart_Details.quantity',
-        'Product_Details.price','Product_Details.discount')
-        ->get();
-        $price=0;
-        foreach($product_cart as $product)
-        {
-            $price+=$product->price-($product->price*$product->discount/100);
-        }
-
-        return view('checkoutcart',['products'=>$product_cart,'totalprice'=>$price]);
-     }
-
+        
      function ordersCheckout(Request $request)
      {
        $validator = Validator::make($request->all(), [
@@ -99,39 +69,50 @@ class OrderController extends Controller
             return redirect('checkoutcart/')-> withInput()-> withErrors($validator);
         }else
         {
-            $productsIdQuantity= CartDetail::where('customercart_phone',session('active_user'))->get(['product_id','quantity']);
+            $productsIdQuantity= CartDetail::productidQuantityId(session('active_user'));
             foreach($productsIdQuantity as $productIdQuantity )
             {
+                //echo $productIdQuantity;
                 $productId=$productIdQuantity->product_id;
                 $quantity=$productIdQuantity->quantity;
                 while($quantity)
                 {
                     $quantity--;
-                    $product=products::where('Id',$productId)->get();
-                    $orderTable=new OrderDetail;  
-                    $orderTable->name =$request->name;
-                    $orderTable->address =$request->address;
-                    $orderTable->pincode =$request->pincode;
-                    $orderTable->city =$request->city;
-                    $orderTable->state =$request->state;
-                    $orderTable->price =$product[0]->price-($product[0]->price*$product[0]->discount/100);
-                    $orderTable->payment_mode =$request->cash_payment;
-                    $orderTable->customer_phone =session('active_user');
-                    $orderTable->phone_no =$request->phone_number;
-                    $orderTable->product_id=$productId;
-                    $orderTable->added_on=Carbon::now();
+                    $product=ProductDetail::productIdDetails($productId);
+                    $price =$product[0]->price-($product[0]->price*$product[0]->discount/100);
+                    $orderTable=new OrderDetail;
                     if(($product[0]->quantity-1)>=0)
                     {
-                        $orderTable->save();
-                        products::where('Id',$productId)->update(['quantity'=>$product[0]->quantity-1]);
+                        OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$productId,'added_on'=>Carbon::now()]);
+                        ProductDetail::updateproductQuantity($productId,['quantity'=>$product[0]->quantity-1]);
                     }
 
                 }
 
             }
-            CartDetail::where('customercart_phone',session('active_user'))->delete();
+            CartDetail::deleteCartItems(session('active_user'));
             return redirect('order_successful')->with('success',"Done!!");
         }
+    }
+     function orderReceived()
+    {
+        try{
 
+            $orders=OrderDetail::ordersInnerJoinproductdetails(session('active_user'));
+            return view('order_receive',['products'=>$orders]);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+        }
+    }
+    function cancelOrder($id)
+     {
+       $orderProductid=OrderDetail::productId($id);
+        $productIdQuantity= ProductDetail::productQuantity($orderProductid);
+        $quantity=$productIdQuantity[0]->quantity;
+        OrderDetail::deleteOrder($id);
+        ProductDetail::updateQuantity($orderProductid,$quantity+1);
+        return redirect('order_history');
      }
 }

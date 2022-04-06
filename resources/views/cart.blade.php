@@ -21,8 +21,20 @@
                         Discount:{{$product->discount}}%<br>
                         Quantity:{{$product->quantity}}<br>
                         Offer:{{$product->offer}}<br>
+                        {{$product->Id}}
                     </div>
+                    <div class="col-sm-4">
+                    <div style="text-align:center;">
+                        <a href="removefromcart/{{$product->Id}}"> 
+
+                            <button type="button" class="btn btn-primary"  >
+                                Remove
+                            </button>
+                        </a>
                 </div>
+            </div>
+                </div>
+
                 <hr>
             @endforeach
         <div style="text-align:center;"><a href="../checkoutcart"><button type="button" class="btn btn-primary"  > Buy Now</button></a></div>

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\ProductDetail as products;
+use App\ProductDetail;
 use Illuminate\Http\Request;
 use App\ContactDetail;
 use Illuminate\Support\Facades\Validator;
@@ -10,14 +10,7 @@ class FlipZoneController extends Controller
 {
     function showContent()
     {
-        try{
-            return view('main',['products'=>products::all()->where('quantity','>','0')->take(4)]);
-        }
-        catch(Exception $e)
-        {
-            dd($e->getMessage());
-            echo "error in showing content to main page";
-        }
+        return view('main',['products'=>ProductDetail::showLimitedProduct(4)]);
     }
     function contactUs(Request $request)
     {
@@ -32,12 +25,7 @@ class FlipZoneController extends Controller
             return redirect('contact_us/')-> withInput()-> withErrors($validator);
         }
         else{
-            $contactDetail=new ContactDetail();
-            $contactDetail->name=$request->name;
-            $contactDetail->phone=$request->phone_number;
-            $contactDetail->problem=$request->problem;
-            $contactDetail->subject=$request->subject;
-            $contactDetail->save();
+            ContactDetail::insertData(['name'=>$request->name,'phone'=>$request->phone_number,'problem'=>$request->problem,'subject'=>$request->subject,]);
             return redirect('/');
         }
     }

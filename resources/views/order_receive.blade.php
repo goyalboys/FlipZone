@@ -22,7 +22,7 @@
                 <div class="col-sm-4">
                 
                     Product Id:{{$product->product_id}}
-                    <h2>shipping Address:<br></h2>
+                    <h2>Shipping Address:<br></h2>
                     Phone Number: {{$product->phone_no}}<br>
                     Address: {{$product->address}} 
                     {{$product->pincode}}
@@ -33,7 +33,7 @@
                     Order Date:{{$product->added_on}}
 
                 </div>
-                <div class="col-sm-4">
+                <!--<div class="col-sm-4">
                     <div style="text-align:center;">
                         <a href="#"> 
 
@@ -42,7 +42,8 @@
                             </button>
                         </a>
                     
-                </div>
+                    </div>
+                    </div>-->
             </div>
             <hr>
         @endforeach
