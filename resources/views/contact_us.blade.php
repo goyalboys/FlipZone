@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'ContactUs')
 @section('content')
 <div class="contact-us">
     Contact us

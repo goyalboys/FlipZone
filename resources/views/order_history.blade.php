@@ -2,6 +2,7 @@
 
 
 @extends('navbar')
+@section('mytitle', 'Order History ')
 @section('content')
     <div class="billing-us">
     Order History

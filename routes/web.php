@@ -11,7 +11,6 @@
 |
 */
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\session;
 
 
 Route::get('/','FlipZoneController@showContent');
@@ -24,8 +23,6 @@ Route::get('login',[ 'as' => 'login',function(){
 Route::get('logout','UserController@logout');
 
 Route::group( ['middleware'=>'protectedPages'],function(){
-
-
     Route::get('merchant_dashboard','DashboardProductController@dashboard');
     Route::get('add_product_details',function()
     {
@@ -51,6 +48,10 @@ Route::group( ['middleware'=>'protectedPages'],function(){
     Route::get('resolved/{id}','DashboardProductController@resolved');
     Route::get('cancel_order/{id}','OrderController@cancelOrder');
     Route::get('removefromcart/{id}','CartController@removeFromcart');
+    Route::get('edit_profile','UserController@editProfile');
+    Route::get('change_password','UserController@changePassword');
+    Route::post('update_password','UserController@updatePassword');
+    Route::post('update_profile','UserController@updateProfile');
 });
 Route::post('register','UserController@userRegistration');
 Route::post('login','UserController@userLogin');

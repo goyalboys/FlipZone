@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'Product')
 @section('content')
 <div class="row">
     <div class="col-sm-6 p-6">

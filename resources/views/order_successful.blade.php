@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'Order Status')
 @section('content')
 <div class="form-content">
 <h1>✔️ Order Successfull<hr>

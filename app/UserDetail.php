@@ -20,7 +20,19 @@ class UserDetail extends Model
     {
         $type_user=UserDetail::where('phone_number',$data)->get()[0]->type_of_user;
         return $type_user;
-
+    }
+    public static function presentuserDetail($data)
+    {
+        $user=UserDetail::where('phone_number',$data)->get();
+        return $user;
+    }
+    public static function updateProfile($phone_no,$data)
+    {
+        UserDetail::where('phone_number',$phone_no)->update($data);
+    }
+    public static function changePassword($phone_no,$password)
+    {
+        UserDetail::where('phone_number',$phone_no)->update($password);
     }
 
 

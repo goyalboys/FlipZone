@@ -12,7 +12,8 @@
     <script src="{{ asset('js/searchscript.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
    
-    <title>Register Merchant</title>    
+    <title>@yield('mytitle') </title>
+   
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -42,10 +43,18 @@
             else
               echo '<li class="nav-item"><a class="nav-link" href="'.url('contact_us').'">Contact Us</a></li>';
             if (session('active_user'))
-              {
+              { 
                 echo '<a class="nav-link" href="'.url('order_history').'">Orders</a>';
                 echo '<a class="nav-link" href="'.url('logout').'">Logout</a>';
-
+                
+                echo '<li class="nav-item" > 
+                        <div class="dropdown">
+                          <a   class="nav-link" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" >
+                            Profile
+                          </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" id="hightolow" href="edit_profile">Edit Profile</a></li>
+                        <li><a class="dropdown-item" id="hightolow" href="change_password">Change Password</a></li></ul></div></li>';
               }
             else
               echo '<a class="nav-link" href="'.url('login').'">Login</a>';

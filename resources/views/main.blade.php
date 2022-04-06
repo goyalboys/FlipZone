@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'FlipZone')
 @section('content')
 
 <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">

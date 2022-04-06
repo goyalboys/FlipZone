@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'Login')
 @section('content')
 
 

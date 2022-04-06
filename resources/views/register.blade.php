@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'Register')
 @section('content')
 
     <img src="{{url('/images/registration-banner.jpg')}}" height='900px' width='100%' style="position: relative;" id="image-register"">

@@ -1,5 +1,6 @@
 
 @extends('navbar')
+@section('mytitle', 'Cart')
 @section('content')
     <div class="billing-us">
     Cart Items

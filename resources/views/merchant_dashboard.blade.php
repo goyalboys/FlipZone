@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'merchant Dashboard')
 @section('content')
 <div  id=container1>
     <div  id="column1">

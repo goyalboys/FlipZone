@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('mytitle', 'Products')
 @section('content')
     <div class="filter-row">
         <div class="column-filter">
