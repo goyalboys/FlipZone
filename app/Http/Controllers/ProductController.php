@@ -20,14 +20,14 @@ class ProductController extends Controller
         return response()->json(['products' => $products]);
     }
 
-    function lowtohigh(Request $req)
+    function lowtohigh(Request $request)
     {
-        $products=ProductDetail::lowTohigh($req['price1'],$req['price2']);      
+        $products=ProductDetail::lowTohigh($request['price1'],$request['price2']);      
         return response()->json(['products' => $products]);
     }
-    function hightolow(Request $req)
+    function hightolow(Request $request)
     {
-        $products=ProductDetail::highTolow($req['price1'],$req['price2']);      
+        $products=ProductDetail::highTolow($request['price1'],$request['price2']);      
         return response()->json(['products' => $products]);
     }
     /*function rating(Request $req)
@@ -43,6 +43,7 @@ class ProductController extends Controller
 
     function searchProduct(Request $request)
     {
+        $value=$request['value'];
         $products=ProductDetail::likeProducts($value);
         return response()->json(['item' => $products]);
     }

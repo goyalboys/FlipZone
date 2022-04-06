@@ -12,7 +12,6 @@
 */
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\session;
-use App\ContactDetail;
 
 
 Route::get('/','FlipZoneController@showContent');
@@ -22,18 +21,12 @@ Route::get('register', function () {
 Route::get('login',[ 'as' => 'login',function(){
     return view('login');
 }]);
-Route::get('logout',function(){
-    session::flush();
-    return redirect('login');
-});
+Route::get('logout','UserController@logout');
 
 Route::group( ['middleware'=>'protectedPages'],function(){
 
 
-    Route::get('merchant_dashboard',function()
-    {
-        return view('merchant_dashboard',['problems'=>ContactDetail::all()]);
-    });
+    Route::get('merchant_dashboard','DashboardProductController@dashboard');
     Route::get('add_product_details',function()
     {
         return view('add_product_detail');
@@ -55,17 +48,10 @@ Route::group( ['middleware'=>'protectedPages'],function(){
     Route::post('edit_product_details/{id}','DashboardProductController@editProductDetail');
     Route::get('editproduct/{id}','DashboardProductController@editProductView');
     Route::get('deleteproduct/{id}','DashboardProductController@deleteProduct');
-    Route::get('resolved/{id}',function($id)
-    {
-        ContactDetail::where('contactId',$id)->delete();
-        return redirect('merchant_dashboard');
-    });
+    Route::get('resolved/{id}','DashboardProductController@resolved');
     Route::get('cancel_order/{id}','OrderController@cancelOrder');
     Route::get('removefromcart/{id}','CartController@removeFromcart');
-
-
 });
-
 Route::post('register','UserController@userRegistration');
 Route::post('login','UserController@userLogin');
 Route::get('products','ProductController@showProducts');

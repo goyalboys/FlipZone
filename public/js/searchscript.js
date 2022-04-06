@@ -20,6 +20,7 @@ function showResult(value)
             //data:'_token = <?php echo csrf_token() ?>',
             success:function(data)
             {
+                console.log(data);
                 tmp='';
                 $.each(data.item,function(key,item){
                     tmp+="<li><a href='product/"+item.Id+"'>";

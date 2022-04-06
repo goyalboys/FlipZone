@@ -8,6 +8,7 @@ use App\ProductDetail;
 use App\OrderDetail;
 use File;
 Use Exception;
+use App\ContactDetail;
 
 class DashboardProductController extends Controller
 {
@@ -112,6 +113,15 @@ class DashboardProductController extends Controller
             dd($e->getMessage());
             echo "error in deleting product";
         }
+    }
+    function resolved($id)
+    {
+        ContactDetail::deleteContact($id);
+        return redirect('merchant_dashboard');
+    }
+    function dashboard()
+    {
+        return view('merchant_dashboard',['problems'=>ContactDetail::allRow()]);
     }
 
 }
