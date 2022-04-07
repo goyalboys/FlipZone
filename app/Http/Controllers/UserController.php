@@ -21,9 +21,11 @@ class UserController extends Controller
         if($validator->fails())
         {
             return redirect('register')-> withInput()-> withErrors($validator);
-        }else
+        }
+        else
         {
-            try{  
+            try
+            {  
                 UserDetail::addUser(['name' =>$request->name,
                 'email_id' =>$request->email_id,
                 'phone_number' =>$request->phone_number,
@@ -49,9 +51,11 @@ class UserController extends Controller
         if($validator->fails())
         {
             return redirect('login')-> withInput()-> withErrors($validator);
-        }else
+        }
+        else
         {
-            try{
+            try
+            {
                 $hashedPassword= UserDetail::hashedPassword($request->phone_number);
                 $normalPassword= $request->password;
                 if(Hash::check($normalPassword,$hashedPassword))
@@ -63,7 +67,8 @@ class UserController extends Controller
                     {
                         return redirect('merchant_dashboard');
                     }
-                    else{
+                    else
+                    {
                         return redirect('/');
                     }
                 }
@@ -78,7 +83,8 @@ class UserController extends Controller
             }
         }
     }
-    function logout(){
+    function logout()
+    {
         session::flush();
         return redirect('login');
     }
@@ -101,7 +107,8 @@ class UserController extends Controller
         if($validator->fails())
         {
             return redirect('edit_profile')-> withInput()-> withErrors($validator);
-        }else
+        }
+        else
         {
             UserDetail::updateProfile(session('active_user'),['name' =>$request->name,'email_id' =>$request->email_id,'gender' =>$request->gender,'type_of_user' =>$request->type_of_user]);
             return redirect('/');
@@ -120,7 +127,8 @@ class UserController extends Controller
             $messages = $validator->messages();
             return redirect('change_password')-> withInput()-> withErrors($validator);
         }
-        else{
+        else
+        {
             $hashedPassword= UserDetail::hashedPassword(session('active_user'));
             $normalPassword= $request->old_password;
             if(Hash::check($normalPassword,$hashedPassword))
@@ -129,14 +137,13 @@ class UserController extends Controller
                 UserDetail::changePassword(session('active_user'),['password'=>$password]);
                 return redirect('/');
             }
-            else{
+            else
+            {
                 $array = [
                     "old_password"=>"old password is not correct"
                 ];
                 return redirect('change_password')-> withInput()-> withErrors($array);
             }
         }
-
-
     }
 }

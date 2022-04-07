@@ -484,3 +484,22 @@ input::-moz-range-track {
   height:100px;
   box-shadow: 3px 3px 5px 7px rgb(112, 112, 114);
 }
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 12px 18px;
+  text-decoration: none;
+  }
+  /* set the style for the active class */
+  .pagination a.active {
+  background-color: dodgerblue;
+  color: white;
+  /*Circle Design with CSS*/
+  border-radius: 50%;
+  }
+  /* add background color when user hovers on inactive class */
+  .pagination a:hover:not(.active) {
+  background-color: #ddd;
+  border-radius: 50%;
+  }

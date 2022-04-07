@@ -10,7 +10,14 @@ class FlipZoneController extends Controller
 {
     function showContent()
     {
-        return view('main',['products'=>ProductDetail::showLimitedProduct(4)]);
+        try
+        {
+            return view('main',['products'=>ProductDetail::showLimitedProduct(4)]);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+        }
     }
     function contactUs(Request $request)
     {
@@ -24,8 +31,16 @@ class FlipZoneController extends Controller
         {
             return redirect('contact_us/')-> withInput()-> withErrors($validator);
         }
-        else{
-            ContactDetail::insertData(['name'=>$request->name,'phone'=>$request->phone_number,'problem'=>$request->problem,'subject'=>$request->subject,]);
+        else
+        {
+            try
+            {
+                ContactDetail::insertData(['name'=>$request->name,'phone'=>$request->phone_number,'problem'=>$request->problem,'subject'=>$request->subject,]);
+            }
+            catch(Exception $e)
+            {
+                dd($e->getMessage());
+            }
             return redirect('/');
         }
     }

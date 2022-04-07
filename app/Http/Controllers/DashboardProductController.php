@@ -31,14 +31,17 @@ class DashboardProductController extends Controller
         if($validator->fails())
         {
             return redirect('add_product_details')-> withInput()-> withErrors($validator);
-        }else
+        }
+        else
         {
-            try{
+            try
+            {
                 ProductDetail::insertProduct(['description' =>$request->description,'product_name' =>$request->product_name,'company_name' =>$request->company_name,'offer' =>$request->offer,'discount' =>$request->discount,'price' =>$request->price,'quantity' =>$request->quantity,'merchant_phone_number' =>session('active_user'),'image_path'=> $request->image->hashName()]);
                 $request->image->store('public');
                 return redirect('productdetails')->with('success',"Done!!");
             }
-            catch(Exception $e){
+            catch(Exception $e)
+            {
                 dd($e->getMessage());
             }
         }
@@ -46,7 +49,8 @@ class DashboardProductController extends Controller
 
     function productDetails()
     {
-        try{
+        try
+        {
             $products=Productdetail::merchantProducts(session('active_user'));
             return view('productdetails',['products'=>$products]);
         }
@@ -59,7 +63,8 @@ class DashboardProductController extends Controller
 
     function editProductView(Request $request,$id)
     {
-        try{
+        try
+        {
             $products=ProductDetail::merchantProductIddetail($id);
             foreach($products as $product)
                 return view('edit_product_details',['product'=>$product,'id'=>$id]);
@@ -82,13 +87,13 @@ class DashboardProductController extends Controller
             'offer'=>'required',
         ]);
         if($validator->fails())
-        {
-            
+        { 
             return redirect('editproduct/$request->id')-> withInput()-> withErrors($validator);
         }
         else
         {
-            try{
+            try
+            {
                 ProductDetail::updateProduct($id,['description'=>$request->description,'product_name'=>$request->product_name,'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,'quantity'=>$request->quantity]);
                 return redirect('productdetails')->with('success',"Done!!");
             }
@@ -101,22 +106,35 @@ class DashboardProductController extends Controller
 
     function deleteProduct($id)
     {
-        try{
-
+        try
+        {
             $imagePath = "storage/".ProductDetail::productImagepath($id);
-            ProductDetail::deleteProduct($id);
-            File::delete($imagePath);
+            try
+            {
+                ProductDetail::deleteProduct($id);
+                File::delete($imagePath);
+            }
+            catch(Exception $e)
+            {
+                dd($e->getMessage());
+            }
             return redirect('productdetails')->with('success',"Done!!");
         }
         catch(Exception $e)
         {
             dd($e->getMessage());
-            echo "error in deleting product";
         }
     }
     function resolved($id)
     {
+        try
+        {
         ContactDetail::deleteContact($id);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+        }
         return redirect('merchant_dashboard');
     }
     function dashboard()

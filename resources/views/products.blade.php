@@ -101,7 +101,12 @@
                 @endif
             </div>
         </div>
+        
     </div>
+</div>
+
+ <div class="d-flex justify-content-center">
+ {{$products->links()}}
 </div>
 <br>
 <div style="width:100%; height:50px;  background-color:black;">

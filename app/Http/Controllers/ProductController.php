@@ -12,6 +12,8 @@ class ProductController extends Controller
         $offers=array('Summer Sale','At Low Cost Emi');
         $discounts=array("10%",'20%',"30%","40%",'50%',"60%",'70%',"80%","90%");
         $products=ProductDetail::allProduct();
+        //echo $products;
+        //echo $products->links();
         return view('products',['products'=>$products,'companies'=>$companies,'offers'=>$offers,'discounts'=>$discounts]);
     }
     function filterApplyPrice(Request $req)

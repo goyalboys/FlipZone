@@ -53,8 +53,8 @@
                             Profile
                           </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" id="hightolow" href="edit_profile">Edit Profile</a></li>
-                        <li><a class="dropdown-item" id="hightolow" href="change_password">Change Password</a></li></ul></div></li>';
+                        <li><a class="dropdown-item"  href="edit_profile">Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="change_password">Change Password</a></li></ul></div></li>';
               }
             else
               echo '<a class="nav-link" href="'.url('login').'">Login</a>';

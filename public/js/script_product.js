@@ -148,7 +148,7 @@
   $("#hightolow").on('click', function() {
     var slider1 = document.getElementById("price1");
     var slider2 = document.getElementById("price2");
-
+    console.log("hi");
     $.ajax({
         url:"sortByhightolow",
         type:"post",

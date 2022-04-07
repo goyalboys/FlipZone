@@ -14,11 +14,10 @@ class ProductDetail extends Model
     {
         $product=ProductDetail::all()->where('quantity','>','0')->take($data);
         return $product;
-
     }
     public static function allProduct()
     {
-        $product=ProductDetail::all()->where('quantity','>','0');
+        $product=ProductDetail::where('quantity','>','0')->paginate(12);
         return $product;
     }
 
@@ -91,10 +90,6 @@ class ProductDetail extends Model
         ProductDetail::where('Id',$id)->update(['quantity'=>$quantity]);
     }
     
-
-
-
     protected $fillable=['description','product_name','company_name','offer','discount','price','quantity','merchant_phone_number','image_path'];
-    //DashboardProductController
     public $timestamps=false;
 }

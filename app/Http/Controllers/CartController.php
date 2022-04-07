@@ -9,8 +9,8 @@ class CartController extends Controller
 {
     function cart($id)
     {
-        try{
-
+        try
+        {
             $quantity = CartDetail::productidQuantity($id);
             echo $quantity;
         }
@@ -20,7 +20,8 @@ class CartController extends Controller
         }
         if(count($quantity)==0)
         {
-            try{
+            try
+            {
                 CartDetail::insertData( ['customercart_phone'=>session('active_user'),'product_id'=>$id,'quantity'=>1]);
             }
             catch(Exception $e)
@@ -28,8 +29,10 @@ class CartController extends Controller
                 dd($e->getMessage());
             }
         }
-        else{
-            try{
+        else
+        {
+            try
+            {
                 CartDetail::updateCartitem($id,$quantity[0]->quantity+1); 
             }
             catch(Exception $e)
@@ -41,7 +44,8 @@ class CartController extends Controller
     }
     function cartItems()
     {
-        try{
+        try
+        {
             $products= CartDetail::cartInnerjoinProductDetails();
             return view('cart',['product_cart'=>$products]);
         }
@@ -52,8 +56,16 @@ class CartController extends Controller
         }
     }
 
-    function checkOutcart(){
-        $product_cart= CartDetail::cartInnerjoinProductDetails();
+    function checkOutcart()
+    {
+        try
+        {
+            $product_cart= CartDetail::cartInnerjoinProductDetails();
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+        }
         $price=0;
         foreach($product_cart as $product)
         {
@@ -63,7 +75,14 @@ class CartController extends Controller
      }
      function removeFromcart($id)
      {
-         CartDetail::removeProduct($id);
-         return redirect('cart');
+        try
+        {
+            CartDetail::removeProduct($id);
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
+        }
+        return redirect('cart');
      }
 }
