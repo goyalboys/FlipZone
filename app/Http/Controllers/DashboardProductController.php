@@ -36,7 +36,10 @@ class DashboardProductController extends Controller
         {
             try
             {
-                ProductDetail::insertProduct(['description' =>$request->description,'product_name' =>$request->product_name,'company_name' =>$request->company_name,'offer' =>$request->offer,'discount' =>$request->discount,'price' =>$request->price,'quantity' =>$request->quantity,'merchant_phone_number' =>session('active_user'),'image_path'=> $request->image->hashName()]);
+                ProductDetail::insertProduct(['description' =>$request->description,'product_name' =>$request->product_name,
+                'company_name' =>$request->company_name,'offer' =>$request->offer,'discount' =>$request->discount,
+                'price' =>$request->price,'quantity' =>$request->quantity,'merchant_phone_number' =>session('active_user'),
+                'image_path'=> $request->image->hashName()]);
                 $request->image->store('public');
                 return redirect('productdetails')->with('success',"Done!!");
             }
@@ -94,7 +97,9 @@ class DashboardProductController extends Controller
         {
             try
             {
-                ProductDetail::updateProduct($id,['description'=>$request->description,'product_name'=>$request->product_name,'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,'quantity'=>$request->quantity]);
+                ProductDetail::updateProduct($id,['description'=>$request->description,'product_name'=>$request->product_name,
+                'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,
+                'quantity'=>$request->quantity]);
                 return redirect('productdetails')->with('success',"Done!!");
             }
             catch(Exception $e)

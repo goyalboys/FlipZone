@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 Use App\CartDetail;
 Use App\ProductDetail;
+use Exception;
 class CartController extends Controller
 {
     function cart($id)
@@ -12,11 +13,15 @@ class CartController extends Controller
         try
         {
             $quantity = CartDetail::productidQuantity($id);
-            echo $quantity;
+            //echo $quantity;
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
+            
         }
         if(count($quantity)==0)
         {
@@ -26,7 +31,10 @@ class CartController extends Controller
             }
             catch(Exception $e)
             {
-                dd($e->getMessage());
+                $array = [
+                    "error"=>$e->getMessage()
+                ];
+                return redirect('error')->withInput()->withErrors($array);
             }
         }
         else
@@ -37,7 +45,10 @@ class CartController extends Controller
             }
             catch(Exception $e)
             {
-                dd($e->getMessage());
+                $array = [
+                    "error"=>$e->getMessage()
+                ];
+                return redirect('error')->withInput()->withErrors($array);
             }
         }
         return redirect("product/$id")->with('success',"Added to cart!!");
@@ -51,8 +62,10 @@ class CartController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
-            echo "error in showing cart items";
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
     }
 
@@ -64,7 +77,10 @@ class CartController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
         $price=0;
         foreach($product_cart as $product)
@@ -81,7 +97,10 @@ class CartController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
         return redirect('cart');
      }

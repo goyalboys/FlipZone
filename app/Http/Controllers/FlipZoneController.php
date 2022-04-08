@@ -5,6 +5,7 @@ use App\ProductDetail;
 use Illuminate\Http\Request;
 use App\ContactDetail;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class FlipZoneController extends Controller
 {
@@ -16,7 +17,10 @@ class FlipZoneController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
     }
     function contactUs(Request $request)
@@ -35,11 +39,15 @@ class FlipZoneController extends Controller
         {
             try
             {
-                ContactDetail::insertData(['name'=>$request->name,'phone'=>$request->phone_number,'problem'=>$request->problem,'subject'=>$request->subject,]);
+                ContactDetail::insertData(['name'=>$request->name,'phone'=>$request->phone_number,
+                'problem'=>$request->problem,'subject'=>$request->subject,]);
             }
             catch(Exception $e)
             {
-                dd($e->getMessage());
+                $array = [
+                    "error"=>$e->getMessage()
+                ];
+                return redirect('error')->withInput()->withErrors($array);
             }
             return redirect('/');
         }

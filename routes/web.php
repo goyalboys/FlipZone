@@ -55,7 +55,7 @@ Route::group( ['middleware'=>'protectedPages'],function(){
 });
 Route::post('register','UserController@userRegistration');
 Route::post('login','UserController@userLogin');
-Route::get('products','ProductController@showProducts');
+Route::get('/products','ProductController@showProducts');
 Route::get('contact_us',function()
 {
     return view('contact_us');
@@ -64,10 +64,14 @@ Route::get('about_us',function()
 {
     return view('about_us');
 });
-Route::post('filter_apply_price','ProductController@filterApplyPrice');
-Route::post('sortBylowtohigh','ProductController@lowTohigh');
-Route::post('sortByhightolow','ProductController@highTolow');
+Route::get('discount','ProductController@discountProduct');
+Route::get('filter_apply_price','ProductController@filterApplyPrice');
+Route::get('sortBylowtohigh','ProductController@lowTohigh');
+Route::get('sortByhightolow','ProductController@highTolow');
 Route::post('searchproduct','ProductController@searchProduct');
 Route::get('present','DashboardProductController@presentUser');
 Route::get('product/{Id}','ProductController@product');
 Route::post('contact_us','FlipZoneController@contactUs');
+Route::get('error',function(){
+    return view('error');
+});

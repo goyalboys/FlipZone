@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\ProductDetail;
 use Illuminate\Http\Request;
+use Exception;
 
 class ProductController extends Controller
 {
@@ -11,25 +12,24 @@ class ProductController extends Controller
         $companies=array('Arrow','peter England','Van Heusan','Zodiac','Louise Phillipe','park Avenue');
         $offers=array('Summer Sale','At Low Cost Emi');
         $discounts=array("10%",'20%',"30%","40%",'50%',"60%",'70%',"80%","90%");
-        $products=ProductDetail::allProduct();
-        //echo $products;
-        //echo $products->links();
+        $products=ProductDetail::allProducts();
         return view('products',['products'=>$products,'companies'=>$companies,'offers'=>$offers,'discounts'=>$discounts]);
     }
     function filterApplyPrice(Request $req)
     { 
-        $products=ProductDetail::betweenPrice($req['price1'],$req['price2']);
+        $products=ProductDetail::allProducts($req['price1'],$req['price2'],3);  //3 for filter
         return response()->json(['products' => $products]);
     }
 
     function lowtohigh(Request $request)
     {
-        $products=ProductDetail::lowTohigh($request['price1'],$request['price2']);      
+        $products=ProductDetail::allProducts($request['price1'],$request['price2'],1);      // 1 for LOW TO HIGH 
+
         return response()->json(['products' => $products]);
     }
     function hightolow(Request $request)
     {
-        $products=ProductDetail::highTolow($request['price1'],$request['price2']);      
+        $products=ProductDetail::allProducts($request['price1'],$request['price2'],2);    //2 for high to low  
         return response()->json(['products' => $products]);
     }
     /*function rating(Request $req)
@@ -41,6 +41,11 @@ class ProductController extends Controller
     {
         $product=ProductDetail::productIddetail($Id);
         return view('product',['product'=>$product]);
+    }
+    function discountProduct(Request $request)
+    {
+        $products=ProductDetail::productDiscount($request['discount']);
+        return response()->json(['products' => $products]);
     }
 
     function searchProduct(Request $request)

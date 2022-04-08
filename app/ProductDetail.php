@@ -15,35 +15,47 @@ class ProductDetail extends Model
         $product=ProductDetail::all()->where('quantity','>','0')->take($data);
         return $product;
     }
-    public static function allProduct()
+    public static function allProducts($price1=0,$price2=0,$type=0)
     {
-        $product=ProductDetail::where('quantity','>','0')->paginate(12);
+        if($type==0)
+        {
+            $product=ProductDetail::where('quantity','>','0')->simplePaginate(12);
+        }
+        if($type==1)
+        {
+            $product=ProductDetail::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
+            ->orderBy('price')->simplePaginate(2);
+        }
+        if($type==2)
+        {
+            $product=ProductDetail::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
+            ->orderBy('price','desc')->simplePaginate(12);
+        }
+        if($type==3)
+        {
+            $product= ProductDetail::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
+            ->simplePaginate(12);
+        }
         return $product;
     }
+    public static function productDiscount($discount)
+    {
+        $product=ProductDetail::where('discount','>',$discount)->simplePaginate(12);
+        return $product;
+    }
+    public  static function productIddetail($Id,$quantity=0)
+    {
+        if($quantity==0)
+            $product=ProductDetail::where('Id',$Id)->where('quantity','>','0')->get();
+        if($quantity==1)
+            $product=ProductDetail::where('Id',$id)->get();
 
-    public static function betweenPrice($price1,$price2)
-    {
-        $product=    ProductDetail::all()->where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0');
         return $product;
-    }
-    public static function lowTohigh($price1,$price2)
-    {
-        $product=ProductDetail::orderBy('price')->where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')->get();
-        return $product;
-    }
-    public static function highTolow($price1,$price2)
-    {
-        $product=ProductDetail::orderBy('price','desc')->where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')->get();
-        return $product;
-    }
-    public  static function productIddetail($Id)
-    {
-       $product=ProductDetail::where('Id',$Id)->where('quantity','>','0')->get();
-       return $product;
     }
     public static function likeProducts($value)
     {
-        $products=ProductDetail::where('product_name','like','%'.$value.'%')->orWhere('company_name', 'like', '%'.$value.'%')->orWhere('description', 'like', '%'.$value.'%')->get();
+        $products=ProductDetail::where('product_name','like','%'.$value.'%')->orWhere('company_name', 'like', '%'.$value.'%')
+        ->orWhere('description', 'like', '%'.$value.'%')->get();
         return $products;
     }
 
@@ -67,29 +79,16 @@ class ProductDetail extends Model
         ProductDetail::where('Id', $id)->delete();
         
     }
-    public static function updateProduct($id,$data)
-    {
-        ProductDetail::where('Id',$id)->update($data);
-    }
-    public static function updateproductQuantity($id,$quantity)
-    {
-        ProductDetail::where('Id',$id)->update($quantity);
-    }
-    public static function productIdDetails($id)
-    {
-        $product=ProductDetail::where('Id',$id)->get();
-        return $product;
-    }
     public static function productQuantity($id)
     {
         $quantity=ProductDetail::where('Id',$id)->get(['quantity']);
         return $quantity;
     }
-    public static function updateQuantity($id,$quantity)
+    public static function updateProduct($id,$data)
     {
-        ProductDetail::where('Id',$id)->update(['quantity'=>$quantity]);
-    }
-    
-    protected $fillable=['description','product_name','company_name','offer','discount','price','quantity','merchant_phone_number','image_path'];
+        ProductDetail::where('Id',$id)->update($data);
+    }    
+    protected $fillable=['description','product_name','company_name','offer','discount','price','quantity',
+    'merchant_phone_number','image_path'];
     public $timestamps=false;
 }

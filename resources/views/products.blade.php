@@ -44,7 +44,7 @@
                 <b>Discount:</b>
                 <br>
                 @foreach($discounts as $discount)
-                    <input type="radio" name='discount'value={{$discount}}>{{$discount}} & above<br>
+                    <input type="radio" class='discount' name='discount'value={{$discount}}>{{$discount}} & above<br>
                 @endforeach
                 <br>
             </div>
@@ -105,7 +105,7 @@
     </div>
 </div>
 
- <div class="d-flex justify-content-center">
+ <div id="product-links" class="d-flex justify-content-center">
  {{$products->links()}}
 </div>
 <br>

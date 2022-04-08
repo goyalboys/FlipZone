@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\UserDetail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\session;
+use Exception;
 
 class UserController extends Controller
 {
@@ -36,7 +37,10 @@ class UserController extends Controller
             }
             catch(Exception $e)
             {
-                dd($e->getMessage());
+                $array = [
+                    "error"=>$e->getMessage()
+                ];
+                return redirect('error')->withInput()->withErrors($array);
             }
         }
     }
@@ -79,7 +83,10 @@ class UserController extends Controller
             }
             catch(Exception $e)
             {
-                dd($e->getMessage());
+                $array = [
+                    "error"=>$e->getMessage()
+                ];
+                return redirect('error')->withInput()->withErrors($array);
             }
         }
     }
@@ -110,7 +117,8 @@ class UserController extends Controller
         }
         else
         {
-            UserDetail::updateProfile(session('active_user'),['name' =>$request->name,'email_id' =>$request->email_id,'gender' =>$request->gender,'type_of_user' =>$request->type_of_user]);
+            UserDetail::updateProfile(session('active_user'),['name' =>$request->name,'email_id' =>$request->email_id,
+            'gender' =>$request->gender,'type_of_user' =>$request->type_of_user]);
             return redirect('/');
         }
     }

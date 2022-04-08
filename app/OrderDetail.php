@@ -14,7 +14,8 @@ class OrderDetail extends Model
     }
     public static function ordersInnerJoinproductdetails($user)
     {
-        $orders=OrderDetail::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')->where('customer_phone',$user)->get();
+        $orders=OrderDetail::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')
+        ->where('customer_phone',$user)->get();
         return $orders;
     }
     public static function deleteOrder($id)
@@ -34,6 +35,7 @@ class OrderDetail extends Model
     {
         return $this->belongsTo('ProductDetail');
     }
-    protected $fillable=['name' ,'address' ,'pincode' ,'city','state' ,'price','payment_mode' ,'customer_phone' ,'phone_no' ,'product_id','added_on'];
+    protected $fillable=['name' ,'address' ,'pincode' ,'city','state' ,'price','payment_mode' ,'customer_phone' 
+    ,'phone_no' ,'product_id','added_on'];
     public $timestamps=false;
 }

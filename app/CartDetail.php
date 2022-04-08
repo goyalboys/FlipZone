@@ -21,7 +21,9 @@ class CartDetail extends Model
     }
     public static function cartInnerjoinProductDetails()
     {
-            $productCart= CartDetail::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')->select('Product_Details.Id','Product_Details.product_name','Product_Details.company_name','Product_Details.offer','Product_Details.image_path','Cart_Details.quantity','Product_Details.price','Product_Details.discount')->get();
+            $productCart= CartDetail::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')
+            ->select('Product_Details.Id','Product_Details.product_name','Product_Details.company_name','Product_Details.offer',
+            'Product_Details.image_path','Cart_Details.quantity','Product_Details.price','Product_Details.discount')->get();
             return $productCart;
     }
     public static function productidQuantityId($user)

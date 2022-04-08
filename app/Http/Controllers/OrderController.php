@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 Use App\CartDetail;
+use Exception;
+
 class OrderController extends Controller
 {
     function checkOut($Id)
@@ -18,7 +20,10 @@ class OrderController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
     }
     function orderCheck(Request $request,$Id)
@@ -44,7 +49,7 @@ class OrderController extends Controller
             'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
             'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$Id,'added_on'=>Carbon::now()]);
 
-            ProductDetail::updateproductQuantity($Id,['quantity'=>$product[0]->quantity-1]);
+            ProductDetail::updateProduct($Id,['quantity'=>$product[0]->quantity-1]);
             return redirect('order_successful')->with('success',"Done!!");
         }
     }
@@ -57,7 +62,10 @@ class OrderController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
     }
     function ordersCheckout(Request $request)
@@ -81,7 +89,10 @@ class OrderController extends Controller
             }
             catch(Exception $e)
             {
-                dd($e->getMessage());
+                $array = [
+                    "error"=>$e->getMessage()
+                ];
+                return redirect('error')->withInput()->withErrors($array);
             }
             foreach($productsIdQuantity as $productIdQuantity )
             {
@@ -91,12 +102,14 @@ class OrderController extends Controller
                 while($quantity)
                 {
                     $quantity--;
-                    $product=ProductDetail::productIdDetails($productId);
+                    $product=ProductDetail::productIddetail($productId,1);
                     $price =$product[0]->price-($product[0]->price*$product[0]->discount/100);
                     $orderTable=new OrderDetail;
                     if(($product[0]->quantity-1)>=0)
                     {
-                        OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$productId,'added_on'=>Carbon::now()]);
+                        OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,
+                        'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
+                        'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$productId,'added_on'=>Carbon::now()]);
                         ProductDetail::updateproductQuantity($productId,['quantity'=>$product[0]->quantity-1]);
                     }
                 }
@@ -114,7 +127,10 @@ class OrderController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
     }
     function cancelOrder($id)
@@ -125,11 +141,14 @@ class OrderController extends Controller
             $productIdQuantity= ProductDetail::productQuantity($orderProductid);
             $quantity=$productIdQuantity[0]->quantity;
             OrderDetail::deleteOrder($id);
-            ProductDetail::updateQuantity($orderProductid,$quantity+1);
+            ProductDetail::updateProduct($orderProductid,['quantity'=>$quantity+1]);
          }
          catch(Exception $e)
          {
-             dd($e->getMessage());
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
          }
         return redirect('order_history');
      }
