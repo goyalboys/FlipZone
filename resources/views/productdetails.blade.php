@@ -23,7 +23,7 @@
                 Company Name:{{$product->company_name}}<br>
                 Description:{{$product->description}}<br>
                 Offer:{{$product->offer}}<br>
-                Discount:{{$product->discount}}<br>
+                Discount:{{$product->discount}}%<br>
                 Quantity:{{$product->quantity}}<br>
                 Price: {{$product->price}}<br>
                 

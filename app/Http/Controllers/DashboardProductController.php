@@ -9,45 +9,30 @@ use App\OrderDetail;
 use File;
 Use Exception;
 use App\ContactDetail;
-
+use App\Http\Requests\ProductFormValidation;
 class DashboardProductController extends Controller
 {
     function presentUser(){
         $user = Auth::user();
         print_r($user);
     }
-    function addProduct(Request $request)
+    function addProduct(ProductFormValidation $request)
     {
-        $validator = Validator::make($request->all(), [
-            'product_name' => 'required|max:200',
-            'description' => 'required',
-            'price'=> 'required|integer',
-            'quantity' => 'required|max:99|integer',
-            'discount' => 'required|integer|max:99',
-            'company_name'=>'required',
-            'image'=>'required',
-            'offer'=>'required',
-        ]);
-        if($validator->fails())
+        $request->validate();
+        try
         {
-            return redirect('add_product_details')-> withInput()-> withErrors($validator);
+            ProductDetail::insertProduct(['description' =>$request->description,'product_name' =>$request->product_name,
+            'company_name' =>$request->company_name,'offer' =>$request->offer,'discount' =>$request->discount,
+            'price' =>$request->price,'quantity' =>$request->quantity,'merchant_phone_number' =>session('active_user'),
+            'image_path'=> $request->image->hashName()]);
+            $request->image->store('public');
+            return redirect('productdetails')->with('success',"Done!!");
         }
-        else
+        catch(Exception $e)
         {
-            try
-            {
-                ProductDetail::insertProduct(['description' =>$request->description,'product_name' =>$request->product_name,
-                'company_name' =>$request->company_name,'offer' =>$request->offer,'discount' =>$request->discount,
-                'price' =>$request->price,'quantity' =>$request->quantity,'merchant_phone_number' =>session('active_user'),
-                'image_path'=> $request->image->hashName()]);
-                $request->image->store('public');
-                return redirect('productdetails')->with('success',"Done!!");
-            }
-            catch(Exception $e)
-            {
-                dd($e->getMessage());
-            }
+            dd($e->getMessage());
         }
+        
     }
     function productDetails()
     {
@@ -77,34 +62,19 @@ class DashboardProductController extends Controller
         }
     }
 
-    function editProductDetail(Request $request,$id)
+    function editProductDetail(ProductFormValidation $request,$id)
     {
-        $validator = Validator::make($request->all(), [
-            'product_name' => 'required|max:200',
-            'description' => 'required',
-            'price'=> 'required|integer',
-            'quantity' => 'required|max:99|integer',
-            'discount' => 'required|integer|max:99',
-            'company_name'=>'required',
-            'offer'=>'required',
-        ]);
-        if($validator->fails())
-        { 
-            return redirect('editproduct/$request->id')-> withInput()-> withErrors($validator);
-        }
-        else
+        $request->validate();
+        try
         {
-            try
-            {
-                ProductDetail::updateProduct($id,['description'=>$request->description,'product_name'=>$request->product_name,
-                'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,
-                'quantity'=>$request->quantity]);
-                return redirect('productdetails')->with('success',"Done!!");
-            }
-            catch(Exception $e)
-            {
-                dd($e->getMessage());
-            }
+            ProductDetail::updateProduct($id,['description'=>$request->description,'product_name'=>$request->product_name,
+            'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,
+            'quantity'=>$request->quantity]);
+            return redirect('productdetails')->with('success',"Done!!");
+        }
+        catch(Exception $e)
+        {
+            dd($e->getMessage());
         }
     }
 

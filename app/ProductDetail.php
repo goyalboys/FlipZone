@@ -49,7 +49,7 @@ class ProductDetail extends Model
         if($quantity==0)
             $product=ProductDetail::where('Id',$Id)->where('quantity','>','0')->get();
         if($quantity==1)
-            $product=ProductDetail::where('Id',$id)->get();
+            $product=ProductDetail::where('Id',$Id)->get();
 
         return $product;
     }

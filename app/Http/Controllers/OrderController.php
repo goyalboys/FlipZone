@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 Use App\CartDetail;
 use Exception;
+use App\Http\Requests\CheckOutFormValidation;
 
 class OrderController extends Controller
 {
@@ -26,32 +27,19 @@ class OrderController extends Controller
             return redirect('error')->withInput()->withErrors($array);
         }
     }
-    function orderCheck(Request $request,$Id)
+    function orderCheck(CheckOutFormValidation $request,$Id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'address' => 'required',
-            'pincode'=> 'required|integer',
-            'state' => 'required',
-            'city' => 'required',
-            'phone_number'=>'required|integer',
-        ]);
-        if($validator->fails())
-        {
-            return redirect('checkout/'.$Id)-> withInput()-> withErrors($validator);
-        }
-        else
-        {
-            $product=ProductDetail::productIddetail($Id);  
-            $price=$product[0]->price-($product[0]->price*$product[0]->discount/100);
 
-            OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,
-            'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
-            'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$Id,'added_on'=>Carbon::now()]);
+        $request->validate();
+        $product=ProductDetail::productIddetail($Id);  
+        $price=$product[0]->price-($product[0]->price*$product[0]->discount/100);
 
-            ProductDetail::updateProduct($Id,['quantity'=>$product[0]->quantity-1]);
-            return redirect('order_successful')->with('success',"Done!!");
-        }
+        OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,
+        'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
+        'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$Id,'added_on'=>Carbon::now()]);
+
+        ProductDetail::updateProduct($Id,['quantity'=>$product[0]->quantity-1]);
+        return redirect('order_successful')->with('success',"Done!!");
     }
     function orderHistory()
     {
@@ -68,55 +56,40 @@ class OrderController extends Controller
             return redirect('error')->withInput()->withErrors($array);
         }
     }
-    function ordersCheckout(Request $request)
+    function ordersCheckout(CheckOutFormValidation $request)
     {
-       $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'address' => 'required',
-            'pincode'=> 'required|integer',
-            'state' => 'required',
-            'city' => 'required',
-            'phone_number'=>'required|integer',
-        ]);
-        if($validator->fails())
-        {
-            return redirect('checkoutcart/')-> withInput()-> withErrors($validator);
+        $request->validate();
+        try{
+            $productsIdQuantity= CartDetail::productidQuantityId(session('active_user'));
         }
-        else
+        catch(Exception $e)
         {
-            try{
-                $productsIdQuantity= CartDetail::productidQuantityId(session('active_user'));
-            }
-            catch(Exception $e)
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
+        }
+        foreach($productsIdQuantity as $productIdQuantity )
+        {
+            $productId=$productIdQuantity->product_id;
+            $quantity=$productIdQuantity->quantity;
+            while($quantity)
             {
-                $array = [
-                    "error"=>$e->getMessage()
-                ];
-                return redirect('error')->withInput()->withErrors($array);
-            }
-            foreach($productsIdQuantity as $productIdQuantity )
-            {
-                //echo $productIdQuantity;
-                $productId=$productIdQuantity->product_id;
-                $quantity=$productIdQuantity->quantity;
-                while($quantity)
+                $quantity--;
+                $product=ProductDetail::productIddetail($productId,1);
+                $price =$product[0]->price-($product[0]->price*$product[0]->discount/100);
+                $orderTable=new OrderDetail;
+                if(($product[0]->quantity-1)>=0)
                 {
-                    $quantity--;
-                    $product=ProductDetail::productIddetail($productId,1);
-                    $price =$product[0]->price-($product[0]->price*$product[0]->discount/100);
-                    $orderTable=new OrderDetail;
-                    if(($product[0]->quantity-1)>=0)
-                    {
-                        OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,
-                        'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
-                        'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$productId,'added_on'=>Carbon::now()]);
-                        ProductDetail::updateproductQuantity($productId,['quantity'=>$product[0]->quantity-1]);
-                    }
+                    OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,
+                    'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
+                    'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$productId,'added_on'=>Carbon::now()]);
+                    ProductDetail::updateProduct($productId,['quantity'=>$product[0]->quantity-1]);
                 }
             }
-            CartDetail::deleteCartItems(session('active_user'));
-            return redirect('order_successful')->with('success',"Done!!");
         }
+        CartDetail::deleteCartItems(session('active_user'));
+        return redirect('order_successful')->with('success',"Done!!");
     }
      function orderReceived()
     {

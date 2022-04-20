@@ -75,6 +75,7 @@ Route::post('searchproduct','ProductController@searchProduct');
 Route::get('present','DashboardProductController@presentUser');
 Route::get('product/{Id}','ProductController@product');
 Route::post('contact_us','FlipZoneController@contactUs');
-Route::get('error',function(){
+Route::get('error',function()
+{
     return view('error');
 });

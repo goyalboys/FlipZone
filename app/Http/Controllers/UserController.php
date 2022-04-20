@@ -7,41 +7,29 @@ use App\UserDetail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\session;
 use Exception;
-
+use App\Http\Requests\RegistrationFormValidation;
 class UserController extends Controller
 {
-    function userRegistration(Request $request)
+    function userRegistration(RegistrationFormValidation $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:200',
-            'email_id' => 'required|email|unique:User_Details',
-            'phone_number'=> 'required|integer|unique:User_Details',
-            'password' => 'required|min:6',
-            'password_confirmation' => 'required|min:6|same:password',
-        ]);
-        if($validator->fails())
-        {
-            return redirect('register')-> withInput()-> withErrors($validator);
+
+        $validator=$request->validate();
+        try
+        {  
+            UserDetail::addUser(['name' =>$request->name,
+            'email_id' =>$request->email_id,
+            'phone_number' =>$request->phone_number,
+            'password'=>Hash::make($request->password),
+            'gender' =>$request->gender,
+            'type_of_user' =>$request->type_of_user]);
+            return redirect('login')->with('success',"Done!!");
         }
-        else
+        catch(Exception $e)
         {
-            try
-            {  
-                UserDetail::addUser(['name' =>$request->name,
-                'email_id' =>$request->email_id,
-                'phone_number' =>$request->phone_number,
-                'password'=>Hash::make($request->password),
-                'gender' =>$request->gender,
-                'type_of_user' =>$request->type_of_user]);
-                return redirect('login')->with('success',"Done!!");
-            }
-            catch(Exception $e)
-            {
-                $array = [
-                    "error"=>$e->getMessage()
-                ];
-                return redirect('error')->withInput()->withErrors($array);
-            }
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
         }
     }
 
