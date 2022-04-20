@@ -22,7 +22,9 @@ Route::get('login',[ 'as' => 'login',function(){
 }]);
 Route::get('logout','UserController@logout');
 
-Route::group( ['middleware'=>'protectedPages'],function(){
+Route::group( ['middleware'=>'protectedPages'],function()
+{
+    
     Route::get('merchant_dashboard','DashboardProductController@dashboard');
     Route::get('add_product_details',function()
     {
@@ -52,6 +54,7 @@ Route::group( ['middleware'=>'protectedPages'],function(){
     Route::get('change_password','UserController@changePassword');
     Route::post('update_password','UserController@updatePassword');
     Route::post('update_profile','UserController@updateProfile');
+
 });
 Route::post('register','UserController@userRegistration');
 Route::post('login','UserController@userLogin');

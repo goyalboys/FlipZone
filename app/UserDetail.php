@@ -10,6 +10,7 @@ class UserDetail extends Model
     public static function addUser($data)
     {
         UserDetail::create($data);
+        return "user created";
     }
     public static function hashedPassword($data)
     {
@@ -29,10 +30,12 @@ class UserDetail extends Model
     public static function updateProfile($phone_no,$data)
     {
         UserDetail::where('phone_number',$phone_no)->update($data);
+        return "profile updated";
     }
     public static function changePassword($phone_no,$password)
     {
         UserDetail::where('phone_number',$phone_no)->update($password);
+        return "password changed";
     }
 
 

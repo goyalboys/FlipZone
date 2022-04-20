@@ -49,7 +49,6 @@ class DashboardProductController extends Controller
             }
         }
     }
-
     function productDetails()
     {
         try
@@ -146,5 +145,4 @@ class DashboardProductController extends Controller
     {
         return view('merchant_dashboard',['problems'=>ContactDetail::allRow()]);
     }
-
 }

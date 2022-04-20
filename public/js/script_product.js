@@ -107,11 +107,14 @@
         url:"sortBylowtohigh",
         type:"get",
         data:{'price2':slider2.value,'price1':slider1.value},
-        dataType:'json',
+        //dataType:'json',
         //data:'_token = <?php echo csrf_token() ?>',
         success:function(data)
         {
-            console.log(data.products);
+            console.log(data);
+
+            //$('#product_data').html(data);
+          console.log(data.products);
             var count=0;
             var forl = document.getElementById("foreach");
             forl.innerHTML="";

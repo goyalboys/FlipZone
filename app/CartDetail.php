@@ -9,6 +9,7 @@ class CartDetail extends Model
     public static function insertData($data)
     {
         CartDetail::create($data);
+        return "created";
     }
     public static function productidQuantity($id)
     {
@@ -18,6 +19,7 @@ class CartDetail extends Model
     public static function updateCartitem($id,$quantity)
     {
         CartDetail::where('product_id',$id)->update(['quantity'=>$quantity]);
+        return "cart item updated";
     }
     public static function cartInnerjoinProductDetails()
     {
@@ -34,10 +36,12 @@ class CartDetail extends Model
     public static function deleteCartItems($user)
     {
         CartDetail::where('customercart_phone',$user)->delete();
+        return "cart item deleted";
     }
     public static function removeProduct($id)
     {
         CartDetail::where('product_id',$id)->delete();
+        return "product removed";
     }
 
     protected $fillable=['customercart_phone','product_id','quantity'];

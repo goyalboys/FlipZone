@@ -11,6 +11,7 @@ class OrderDetail extends Model
     public static function addOrder($data)
     {
         OrderDetail::create($data);
+        return "order created";
     }
     public static function ordersInnerJoinproductdetails($user)
     {
@@ -21,16 +22,13 @@ class OrderDetail extends Model
     public static function deleteOrder($id)
     {
         OrderDetail::where('orderId',$id)->delete();
+        return "order deleted";
     }
-
     public static function productId($id)
     {
         $product_id=OrderDetail::where('orderId',$id)->get(['product_id']);
         return $product_id[0]->product_id;
     }
-
-    
-    
     public function product()
     {
         return $this->belongsTo('ProductDetail');

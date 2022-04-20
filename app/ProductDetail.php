@@ -9,6 +9,7 @@ class ProductDetail extends Model
     public static function insertProduct($data)
     {
         ProductDetail::Create($data);
+        return "product created";
     }
     public static function showLimitedProduct($data)
     {
@@ -24,7 +25,7 @@ class ProductDetail extends Model
         if($type==1)
         {
             $product=ProductDetail::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
-            ->orderBy('price')->simplePaginate(2);
+            ->orderBy('price')->simplePaginate(12);
         }
         if($type==2)
         {
@@ -40,7 +41,7 @@ class ProductDetail extends Model
     }
     public static function productDiscount($discount)
     {
-        $product=ProductDetail::where('discount','>',$discount)->simplePaginate(12);
+        $product=ProductDetail::where('discount','>=',$discount)->simplePaginate(12);
         return $product;
     }
     public  static function productIddetail($Id,$quantity=0)
@@ -54,8 +55,8 @@ class ProductDetail extends Model
     }
     public static function likeProducts($value)
     {
-        $products=ProductDetail::where('product_name','like','%'.$value.'%')->orWhere('company_name', 'like', '%'.$value.'%')
-        ->orWhere('description', 'like', '%'.$value.'%')->get();
+        $products=ProductDetail::where(function($query) use($value){$query->where('product_name','like','%'.$value.'%')->orWhere('company_name', 'like', '%'.$value.'%')
+        ->orWhere('description', 'like', '%'.$value.'%');})->where('quantity','>','0')->limit(5)->get();
         return $products;
     }
 
@@ -77,6 +78,7 @@ class ProductDetail extends Model
     public static function deleteProduct($id)
     {
         ProductDetail::where('Id', $id)->delete();
+        return "product deleted";
         
     }
     public static function productQuantity($id)
@@ -87,6 +89,7 @@ class ProductDetail extends Model
     public static function updateProduct($id,$data)
     {
         ProductDetail::where('Id',$id)->update($data);
+        return "product updated";
     }    
     protected $fillable=['description','product_name','company_name','offer','discount','price','quantity',
     'merchant_phone_number','image_path'];

@@ -2,7 +2,7 @@
 @section('mytitle', 'Edit Profile')
 @section('content')
 
-<img src="{{url('/images/registration-banner.jpg')}}" height='900px' width='100%' style="position: relative;" id="image-register"">
+<img src="{{url('/images/rpslog.jpg')}}" height='900px' width='100%' style="position: relative;" id="image-register"">
 
     <div class="form-content">
    
