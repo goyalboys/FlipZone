@@ -4,7 +4,9 @@
 <div class="row">
     <div class="col-sm-6 p-6">
         <div class="box-content">
-            <img src="../storage/{{$product[0]->image_path}}" height='260px' width='100%' style="position: relative;" id="image-register""> 
+
+            <img src="../../storage/{{$product[0]->image_path}}" height='260px' width='100%' style="position: relative;" id="image-register""> 
+            
            
         </div>
     </div>

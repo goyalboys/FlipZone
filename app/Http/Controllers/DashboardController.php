@@ -8,14 +8,12 @@ use App\ProductDetail;
 use App\OrderDetail;
 use File;
 Use Exception;
-use App\ContactDetail;
+use App\Ticket;
 use App\Http\Requests\ProductFormValidation;
-class DashboardProductController extends Controller
+use Illuminate\Support\Facades\Auth;
+class DashboardController extends Controller
 {
-    function presentUser(){
-        $user = Auth::user();
-        print_r($user);
-    }
+    
     function addProduct(ProductFormValidation $request)
     {
         $request->validate();
@@ -48,7 +46,7 @@ class DashboardProductController extends Controller
     }
 
 
-    function editProductView(Request $request,$id)
+    function editProduct(Request $request,$id)
     {
         try
         {
@@ -99,11 +97,12 @@ class DashboardProductController extends Controller
             dd($e->getMessage());
         }
     }
+
     function resolved($id)
     {
         try
         {
-        ContactDetail::deleteContact($id);
+        Ticket::deleteTicket($id);
         }
         catch(Exception $e)
         {
@@ -111,8 +110,15 @@ class DashboardProductController extends Controller
         }
         return redirect('merchant_dashboard');
     }
+
     function dashboard()
     {
-        return view('merchant_dashboard',['problems'=>ContactDetail::allRow()]);
+        return view('merchant_dashboard',['problems'=>Ticket::allTicket()]);
     }
+
+    function ProductPage()
+    {
+        return view('add_product_detail');
+    }
+    
 }

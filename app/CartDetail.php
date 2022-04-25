@@ -6,47 +6,45 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartDetail extends Model
 {
+    protected $fillable=[
+        'customercart_phone',
+        'product_id',
+        'quantity'
+    ];
+    public $timestamps=false;
+
     public static function insertData($data)
     {
-        CartDetail::create($data);
-        return "created";
+        return self::create($data);;
     }
     public static function productidQuantity($id)
     {
-        $quantity=CartDetail::where('product_id',$id)->get(['quantity']);
+        $quantity=self::where('product_id',$id)->get(['quantity']);
         return $quantity;
     }
     public static function updateCartitem($id,$quantity)
     {
-        CartDetail::where('product_id',$id)->update(['quantity'=>$quantity]);
-        return "cart item updated";
+        return self::where('product_id',$id)->update(['quantity'=>$quantity]);;
     }
-    public static function cartInnerjoinProductDetails()
+    public static function cartProductDetails()
     {
-            $productCart= CartDetail::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')
+            $productCart= self::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')
             ->select('Product_Details.Id','Product_Details.product_name','Product_Details.company_name','Product_Details.offer',
             'Product_Details.image_path','Cart_Details.quantity','Product_Details.price','Product_Details.discount')->get();
             return $productCart;
     }
     public static function productidQuantityId($user)
     {
-        $productsIdQuantity= CartDetail::where('customercart_phone',$user)->get(['product_id','quantity']);
+        $productsIdQuantity= self::where('customercart_phone',$user)->get(['product_id','quantity']);
         return $productsIdQuantity;
     }
     public static function deleteCartItems($user)
     {
-        CartDetail::where('customercart_phone',$user)->delete();
-        return "cart item deleted";
+        return self::where('customercart_phone',$user)->delete();;
     }
     public static function removeProduct($id)
     {
-        CartDetail::where('product_id',$id)->delete();
-        return "product removed";
+        return  self::where('product_id',$id)->delete();;
     }
-
-    protected $fillable=['customercart_phone','product_id','quantity'];
-    
-
-    public $timestamps=false;
     //
 }

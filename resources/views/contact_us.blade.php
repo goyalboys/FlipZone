@@ -5,7 +5,7 @@
     Contact us
 </div>
 <div class="contact-Form">
-    <form name="contactForm" method="post" action='/contact_us'>
+    <form name="contactForm" method="post" action='/raise_ticket'>
          {{ csrf_field() }}
             <label>Name</label><br>
             <input type="text" name="name" value="{{ old('name') }}" autocomplete="off">

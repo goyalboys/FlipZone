@@ -17,7 +17,16 @@ class CustomAuth
      */
     public function handle($request, Closure $next)
     {
+        /*
+        print_r(Auth::user());
+        if(!Auth::check())
+        {
+            echo "hello";
+            //return "hello";
 
+        }
+        echo "hi";
+*/
         //echo $request->path();
         if (!Session::get('active_user')) 
         {

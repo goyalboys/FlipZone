@@ -3,95 +3,118 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Exception;
 
 class ProductDetail extends Model
 {
+    protected $fillable=[
+        'description',
+        'product_name',
+        'company_name',
+        'offer',
+        'discount',
+        'price',
+        'quantity',
+        'merchant_phone_number',
+        'image_path'
+    ];
+    public $timestamps=false;
+
     public static function insertProduct($data)
     {
-        ProductDetail::Create($data);
-        return "product created";
+       return  self::Create($data);
     }
     public static function showLimitedProduct($data)
     {
-        $product=ProductDetail::all()->where('quantity','>','0')->take($data);
+        $product=self::all()->where('quantity','>','0')->take($data);
         return $product;
     }
     public static function allProducts($price1=0,$price2=0,$type=0)
     {
         if($type==0)
         {
-            $product=ProductDetail::where('quantity','>','0')->simplePaginate(12);
+            $product=self::where('quantity','>','0')->simplePaginate(12);
         }
         if($type==1)
         {
-            $product=ProductDetail::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
+            $product=self::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
             ->orderBy('price')->simplePaginate(12);
         }
         if($type==2)
         {
-            $product=ProductDetail::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
+            $product=self::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
             ->orderBy('price','desc')->simplePaginate(12);
         }
         if($type==3)
         {
-            $product= ProductDetail::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
+            $product= self::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
             ->simplePaginate(12);
         }
         return $product;
     }
     public static function productDiscount($discount)
     {
-        $product=ProductDetail::where('discount','>=',$discount)->simplePaginate(12);
+        $product=self::where('discount','>=',$discount)->simplePaginate(12);
         return $product;
     }
     public  static function productIddetail($Id,$quantity=0)
     {
-        if($quantity==0)
-            $product=ProductDetail::where('Id',$Id)->where('quantity','>','0')->get();
-        if($quantity==1)
-            $product=ProductDetail::where('Id',$Id)->get();
+        if(!empty(self::find($Id)))
+        {
+            if($quantity==0)
+                $product=self::where('Id',$Id)->where('quantity','>','0')->get();
+            if($quantity==1)
+                $product=self::where('Id',$Id)->get();
+            return $product;
+        }
 
-        return $product;
+        //throw new Exception("Error Processing Request");
+            
     }
     public static function likeProducts($value)
     {
-        $products=ProductDetail::where(function($query) use($value){$query->where('product_name','like','%'.$value.'%')->orWhere('company_name', 'like', '%'.$value.'%')
-        ->orWhere('description', 'like', '%'.$value.'%');})->where('quantity','>','0')->limit(5)->get();
+        $products=self::where(
+            function($query) use($value)
+            {$query->where('product_name','like','%'.$value.'%')
+                ->orWhere('company_name', 'like', '%'.$value.'%')
+                ->orWhere('description', 'like', '%'.$value.'%');})
+                ->where('quantity','>','0')->limit(5)->get();
         return $products;
     }
 
     public static function merchantProducts($merchantPhoneNumber)
     {
-        $products=Productdetail::all()->where('merchant_phone_number',session('active_user'));
+        $products=self::all()->where('merchant_phone_number',session('active_user'));
         return $products;
     }
     public static function merchantProductIddetail($id)
     {
-        $products=ProductDetail::all()->where('Id',$id);
+        $products=self::all()->where('Id',$id);
         return $products;
     }
     public static function productImagepath($id)
     {
-        $imagePath=ProductDetail::where('Id', $id)->get(['image_path'])[0]->imagePath;
+        $imagePath=self::where('Id', $id)->get(['image_path'])[0]->imagePath;
         return $imagePath;
-    }
+    }    
     public static function deleteProduct($id)
     {
-        ProductDetail::where('Id', $id)->delete();
-        return "product deleted";
+        return self::where('Id', $id)->delete();
         
     }
     public static function productQuantity($id)
     {
-        $quantity=ProductDetail::where('Id',$id)->get(['quantity']);
+        $quantity=self::where('Id',$id)->get(['quantity']);
         return $quantity;
     }
     public static function updateProduct($id,$data)
     {
-        ProductDetail::where('Id',$id)->update($data);
-        return "product updated";
-    }    
-    protected $fillable=['description','product_name','company_name','offer','discount','price','quantity',
-    'merchant_phone_number','image_path'];
-    public $timestamps=false;
+        return self::where('Id',$id)->update($data);
+    }  
+    public static function showProductspaginate($data)
+    {
+        $products=self::skip($data['start'])->take($data['end'])->get();
+        return $products;
+    }  
+    
 }

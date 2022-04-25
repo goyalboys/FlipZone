@@ -13,7 +13,7 @@ class CreateContactus extends Migration
      */
     public function up()
     {
-        Schema::create('Contact_Details', function (Blueprint $table) {
+        Schema::create('Tickets', function (Blueprint $table) {
             $table->increments('contactId');
             $table->engine = 'InnoDB';
             $table->string('name')->default('');
@@ -31,6 +31,6 @@ class CreateContactus extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Contact_Details');
+        Schema::dropIfExists('Tickets');
     }
 }

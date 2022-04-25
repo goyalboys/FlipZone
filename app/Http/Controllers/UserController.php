@@ -8,20 +8,23 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\session;
 use Exception;
 use App\Http\Requests\RegistrationFormValidation;
+
 class UserController extends Controller
 {
     function userRegistration(RegistrationFormValidation $request)
     {
 
-        $validator=$request->validate();
+        $request->validate();
         try
         {  
-            UserDetail::addUser(['name' =>$request->name,
-            'email_id' =>$request->email_id,
-            'phone_number' =>$request->phone_number,
-            'password'=>Hash::make($request->password),
-            'gender' =>$request->gender,
-            'type_of_user' =>$request->type_of_user]);
+            UserDetail::addUser([
+                'name' =>$request->name,
+                'email_id' =>$request->email_id,
+                'phone_number' =>$request->phone_number,
+                'password'=>Hash::make($request->password),
+                'gender' =>$request->gender,
+                'type_of_user' =>$request->type_of_user
+            ]);
             return redirect('login')->with('success',"Done!!");
         }
         catch(Exception $e)
@@ -52,6 +55,7 @@ class UserController extends Controller
                 $normalPassword= $request->password;
                 if(Hash::check($normalPassword,$hashedPassword))
                 {
+                   // Auth::
                     session(['active_user' =>$request->phone_number]);
                     $type_user=UserDetail::typeOFuser($request->phone_number);
                     session(['type_user' =>$type_user]);

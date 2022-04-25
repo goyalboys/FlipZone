@@ -5,7 +5,7 @@
     <div  id="column1">
         <div class="side_container">
             <h2 style="color:white;">services</h2><hr>
-            <a href="add_product_details" aria-current="true">Add product</a><hr>
+            <a href="add_product" aria-current="true">Add product</a><hr>
             <a href="#">Product Details</a><hr>
             <a href="order_receive"> Order Receive</a><hr>
 

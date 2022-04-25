@@ -14,8 +14,7 @@
                     <img src="../storage/{{$order->image_path}}" height='160px' width='40%' style="position: relative;" id="image-register"><br>
                 </div> 
                 <div class="col-sm-4">
-                
-                    Product Id:{{$order->product_id}}
+                    Order Id : {{$order->orderId}}<br>
                     <h2>shipping Address:<br></h2>
                     Phone Number: {{$order->phone_no}}<br>
                     Address: {{$order->address}} 

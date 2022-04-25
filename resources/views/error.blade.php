@@ -5,6 +5,6 @@
 <!--@if($errors->has('error'))
 {{ $errors->first('error') }}
 @endif-->
-Someting went wrong
+Error 404 
 </div>
 @endsection

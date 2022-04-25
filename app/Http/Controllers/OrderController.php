@@ -45,7 +45,7 @@ class OrderController extends Controller
     {
         try
         {
-            $orders=OrderDetail::ordersInnerJoinproductdetails(session('active_user'));
+            $orders=OrderDetail::ordersproductdetails(session('active_user'));
             return view('order_history',['orders'=>$orders]);
         }
         catch(Exception $e)
@@ -95,7 +95,7 @@ class OrderController extends Controller
     {
         try
         {
-            $orders=OrderDetail::ordersInnerJoinproductdetails(session('active_user'));
+            $orders=OrderDetail::ordersproductdetails(session('active_user'));
             return view('order_receive',['products'=>$orders]);
         }
         catch(Exception $e)
@@ -125,4 +125,9 @@ class OrderController extends Controller
          }
         return redirect('order_history');
      }
+    function status()
+    {
+        return view('order_successful');
+    }
+    
 }
