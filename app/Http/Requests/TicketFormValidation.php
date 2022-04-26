@@ -24,10 +24,10 @@ class TicketFormValidation extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'problem' => 'required',
-            'phone_number'=> 'required|integer',
-            'subject' => 'required'
+            'name' => 'required|max:255',
+            'problem' => 'required|max:255',
+            'phone_number'=> 'required|integer|digits:10|min:0',
+            'subject' => 'required|max:255'
         ];
     }
 }

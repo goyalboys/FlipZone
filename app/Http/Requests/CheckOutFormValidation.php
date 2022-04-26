@@ -24,12 +24,12 @@ class CheckOutFormValidation extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'address' => 'required',
-            'pincode'=> 'required|integer',
-            'state' => 'required',
-            'city' => 'required',
-            'phone_number'=>'required|integer',
+            'name' => 'required|max:255',
+            'address' => 'required|max:255',
+            'pincode'=> 'required|integer|min:6',
+            'state' => 'required|max:255',
+            'city' => 'required|max:255',
+            'phone_number'=>'required|integer|digits:10|min:0',
         ];
     }
 }

@@ -25,11 +25,11 @@ class ProductFormValidation extends FormRequest
     {
         return [
             'product_name' => 'required|max:200',
-            'description' => 'required',
-            'price'=> 'required|integer',
+            'description' => 'required|max:255',
+            'price'=> 'required|integer|min:1',
             'quantity' => 'required|max:99|integer',
             'discount' => 'required|integer|max:99',
-            'company_name'=>'required',
+            'company_name'=>'required|max:255',
             'image'=>'required',
             'offer'=>'required',
         ];
