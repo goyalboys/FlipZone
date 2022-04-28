@@ -6,7 +6,7 @@
         <div class="side_container">
             <h2 style="color:white;">services</h2><hr>
             <a href="add_product" aria-current="true">Add product</a><hr>
-            <a href="productdetails">Product Details</a><hr>
+            <a href="merchant_products">Product Details</a><hr>
             <a href="order_receive"> order received</a><hr>
             <a href="#">Past Orders</a><hr>
         </div>

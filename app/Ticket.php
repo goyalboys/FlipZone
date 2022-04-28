@@ -18,13 +18,13 @@ class Ticket extends Model
     {
         return self::create($data);
     }
-    public static function deleteTicket($id)
+    public static function deleteTicketById($id)
     {
         return self::where('contactId',$id)->delete();
     }
-    public static function Ticket($id)
+    public static function getTicketDetailsById($contactId)
     {
-        return self::where('contactId',$id)->find(1);
+        return self::where('contactId',$contactId)->find(1);
     }
     public static function allTicket()
     {

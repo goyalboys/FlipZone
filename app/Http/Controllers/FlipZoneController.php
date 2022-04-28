@@ -30,41 +30,35 @@ class FlipZoneController extends Controller
     {
         try
         {
-            $products=ProductDetail::showLimitedProduct(4);
+            $products=ProductDetail::getLimitedProduct(4);
             
         }
         catch(Exception $e)
         {
-            $array = [ "error"=>$e->getMessage() ];
+            $array = [ "error" => $e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
-        return view('main',['products'=>$products]);
+        return view('main',['products' => $products]);
     }
     function ticket(TicketFormValidation $request)
     {
         $request->validate();
-        // $validator = Validator::make($request->all(), [
-        //     'name' => 'required',
-        //     'problem' => 'required',
-        //     'phone_number'=> 'required|integer',
-        //     'subject' => 'required',
-        // ]);
-
-        // if($validator->fails())
-        // {
-        //     return redirect('contact_us/')-> withInput()-> withErrors($validator);
-        // }
         try
         {
             DB::beginTransaction();
-            Ticket::raiseTicket(['name'=>$request->name,'phone'=>$request->phone_number,
-                'problem'=>$request->problem,'subject'=>$request->subject,]);
+            Ticket::raiseTicket(
+            [
+                'name' =>$request->name,
+                'phone' =>$request->phone_number,
+                'problem' =>$request->problem,
+                'subject' =>$request->subject
+            ]);
             DB::Commit();
         }
         catch(Exception $e)
         {
             DB::rollback();
-            $array = [ "error"=>$e->getMessage() ];
+            $array = [ "error" => $e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
         return redirect('/');

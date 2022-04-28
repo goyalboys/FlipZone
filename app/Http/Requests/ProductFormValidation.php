@@ -23,15 +23,30 @@ class ProductFormValidation extends FormRequest
      */
     public function rules()
     {
-        return [
-            'product_name' => 'required|max:200',
-            'description' => 'required|max:255',
-            'price'=> 'required|integer|min:1',
-            'quantity' => 'required|max:99|integer',
-            'discount' => 'required|integer|max:99',
-            'company_name'=>'required|max:255',
-            //'image'=>'required',
-            'offer'=>'required',
-        ];
+        switch($this->method())
+        {
+            case 'POST':
+                return [
+                    'product_name' => 'required|max:200',
+                    'description' => 'required|max:255',
+                    'price'=> 'required|integer|min:1',
+                    'quantity' => 'required|max:99|integer',
+                    'discount' => 'required|integer|max:99',
+                    'company_name'=>'required|max:255',
+                    'image'=>'required',
+                    'offer'=>'required',
+                ];
+            case 'PUT':
+                return [
+                    'product_name' => 'required|max:200',
+                    'description' => 'required|max:255',
+                    'price'=> 'required|integer|min:1',
+                    'quantity' => 'required|max:99|integer',
+                    'discount' => 'required|integer|max:99',
+                    'company_name'=>'required|max:255',
+                    'offer'=>'required',
+                ];
+        }
+        
     }
 }

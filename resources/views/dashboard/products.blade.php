@@ -56,6 +56,9 @@
             </div>
             <hr>
         @endforeach
+        <div id="product-links" class="d-flex justify-content-center">
+            {{$products->links()}}
+        </div>
 
   </div>
 </div>

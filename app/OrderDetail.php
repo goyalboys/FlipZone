@@ -27,7 +27,7 @@ class OrderDetail extends Model
         
         return self::create($data);
     }
-    public static function ordersproductdetails($user)
+    public static function getOrderedProductDetails($user)
     {
         $orders=self::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')
             ->where('customer_phone',$user)->get();
@@ -37,7 +37,7 @@ class OrderDetail extends Model
     {
         return self::where('orderId',$id)->delete();
     }
-    public static function productId($id)
+    public static function getProductIdByOrderId($id)
     {
         $product_id=self::where('orderId',$id)->get(['product_id']);
         return $product_id[0]->product_id;
@@ -46,8 +46,6 @@ class OrderDetail extends Model
     {
         return self::belongsToMany('App\ProductDetail');
        // return self::belongsToMany(ProductDetail::class, 'Id', 'product_id');
-
-        
     }
     public static function orderDetail($id)
     {

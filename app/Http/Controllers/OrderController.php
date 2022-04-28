@@ -14,11 +14,11 @@ use NewException;
 
 class OrderController extends Controller
 {
-    function checkOut($Id)
+    function checkOut($id)
     {
         try
         {
-            $product=ProductDetail::productIddetail($Id);
+            $product=ProductDetail::getProductDetailsById($id);
             if(empty($product))
             {
                 throw New Exception('Product not found');
@@ -26,90 +26,106 @@ class OrderController extends Controller
         }
         catch(Exception $e)
         {
-            $array = [ "error"=>$e->getMessage() ];
+            $array = [ "error" => $e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
-        return view('checkout',['product'=>$product]);
+        return view('checkout',['product' => $product]);
     }
-    function orderProduct(CheckOutFormValidation $request,$Id)
+    function orderProduct(CheckOutFormValidation $request,$id)
     {
         try{
             DB::beginTransaction();
             $request->validate();
-            $product=ProductDetail::productIddetail($Id);
+            $product=ProductDetail::getProductDetailsById($id);
             if(empty($product))
             {
                 throw New Exception('Product not found');
             }
-            $price=$product[0]->price-($product[0]->price*$product[0]->discount/100);
-            OrderDetail::addOrder( [ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,
-                'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
-                'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$Id,'added_on'=>Carbon::now() ] );
-
-            ProductDetail::updateProduct($Id,['quantity'=>$product[0]->quantity-1]);
+            $price= $product[0]->price - ( $product[0]->price * $product[0]->discount/100 );
+            OrderDetail::addOrder( 
+            [   'name' => $request->name,
+                'address' => $request->address,
+                'pincode' => $request->pincode,
+                'city' => $request->city,
+                'state' => $request->state,
+                'price' => $price,
+                'payment_mode' => $request->cash_payment,
+                'customer_phone' => session('active_user'),
+                'phone_no' => $request-> phone_number,
+                'product_id'=> $id,
+                'added_on' => Carbon::now() 
+            ]);
+            ProductDetail::updateProductById($id,['quantity'=>$product[0]->quantity-1]);
             DB::Commit();
         }
         catch(Exception $e)
         {
             DB::rollback();
-            $array = [
-                "error"=>$e->getMessage()
-            ];
+            $array = [ "error" => $e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
-        
         return redirect('order_successful')->with('success',"Done!!");
     }
     function orderHistory()
     {
         try
         {
-            $orders=OrderDetail::ordersproductdetails(session('active_user'));
+            $orders=OrderDetail::getOrderedProductDetails(session('active_user'));
         }
         catch(Exception $e)
         {
-            $array = [ "error"=>$e->getMessage() ];
+            $array = [ "error" => $e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
-        return view('order_history',['orders'=>$orders]);
+        return view('order_history',['orders' => $orders]);
     }
     function orderProducts(CheckOutFormValidation $request)
     {
         $request->validate();
         try{
-            $productsIdQuantity= CartDetail::productDetail(session('active_user'),['product_id','quantity']);
+            $productsIdQuantity= CartDetail::getCartItemDetails(session('active_user'),['product_id','quantity']);
         }
         catch(Exception $e)
         {
-            $array = [ "error"=>$e->getMessage() ];
+            $array = [ "error" => $e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
         foreach($productsIdQuantity as $productIdQuantity )
         {
-            $productId=$productIdQuantity->product_id;
-            $quantity=$productIdQuantity->quantity;
+            $productId = $productIdQuantity->product_id;
+            $quantity = $productIdQuantity->quantity;
             while($quantity)
             {
                 $quantity--;
-                $product=ProductDetail::productIddetail($productId,1);
+                $product=ProductDetail::getProductDetailsById($productId,1);
                 $price =$product[0]->price-($product[0]->price*$product[0]->discount/100);
-                if(($product[0]->quantity-1)>=0)
+                if(( $product[0]->quantity-1 ) >= 0 )
                 {
                     try
                     {
                         DB::beginTransaction();
-                        OrderDetail::addOrder([ 'name' =>$request->name,'address' =>$request->address,'pincode' =>$request->pincode,
-                            'city' =>$request->city,'state' =>$request->state,'price' =>$price,'payment_mode' =>$request->cash_payment,
-                            'customer_phone' =>session('active_user'),'phone_no' =>$request->phone_number,'product_id'=>$productId,'added_on'=>Carbon::now()]);
-                        
-                        ProductDetail::updateProduct($productId,['quantity'=>$product[0]->quantity-1]);
+                        OrderDetail::addOrder(
+                        [ 
+                            'name' =>$request->name,
+                            'address' =>$request->address,
+                            'pincode' =>$request->pincode,
+                            'city' =>$request->city,
+                            'state' =>$request->state,
+                            'price' =>$price,
+                            'payment_mode' =>$request->cash_payment,
+                            'customer_phone' =>session('active_user'),
+                            'phone_no' =>$request->phone_number,
+                            'product_id'=>$productId,
+                            'added_on'=>Carbon::now()
+                        ]);
+                        ProductDetail::updateProductById($productId,['quantity'=>$product[0]->quantity-1]);
                         CartDetail::deleteCartItems(session('active_user'));
                         DB::Commit();
                     }
                     catch(Exception $e)
                     {
                         DB::rollback();
-                        $array = [ "error"=>$e->getMessage() ];
+                        $array = [ "error" => $e->getMessage() ];
                         return redirect('error')->withInput()->withErrors($array);
                     }
                 }
@@ -118,26 +134,26 @@ class OrderController extends Controller
         return redirect('order_successful')->with('success',"Done!!");
     }
 
-    function cancelOrder($id)
+    function cancelOrder($orderId)
      {
          try
          {
             DB::beginTransaction();
-            $orderProductid=OrderDetail::productId($id);
+            $orderProductid = OrderDetail::getProductIdByOrderId($orderId);
             if(empty($orderProductid))
             {
                 throw New Exception('Order not found');
             }
-            $productIdQuantity= ProductDetail::productQuantity($orderProductid);
+            $productIdQuantity= ProductDetail::getProductQuantityById($orderProductid);
             $quantity=$productIdQuantity[0]->quantity;
-            OrderDetail::deleteOrder($id);
+            OrderDetail::deleteOrder($orderId);
             ProductDetail::updateProduct($orderProductid,['quantity'=>$quantity+1]);
             DB::Commit();
          }
          catch(Exception $e)
          {
              DB::rollback();
-            $array = [ "error"=>$e->getMessage() ];
+            $array = [ "error" => $e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
          }
         return redirect('order_history');

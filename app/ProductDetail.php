@@ -24,16 +24,15 @@ class ProductDetail extends Model
     {
        return  self::Create($data);
     }
-    public static function showLimitedProduct($data)
+    public static function getLimitedProduct($quantity)
     {
-        $product=self::where('quantity','>','0')->simplePaginate($data);
+        $product=self::where('quantity','>','0')->simplePaginate($quantity);
         return $product;
     }
-    public static function allProducts($price1=0,$price2=0,$type=0)
+    public static function getAllProducts($price1=0,$price2=0,$type=0)
     {
         $product=new ProductDetail;
         $product=$product->where('quantity','>','0');
-        //dd($product);
         if($type!=0)
         {
             $product=$product->where('price','>',$price1)->where('price','<',$price2);
@@ -49,12 +48,12 @@ class ProductDetail extends Model
         }
         return $product->simplePaginate(12);
     }
-    public static function productDiscount($discount)
+    public static function getProductHasMoreThanThisDiscount($discount)
     {
         $product=self::where('discount','>=',$discount)->simplePaginate(12);
         return $product;
     }
-    public  static function productIddetail($Id,$quantity=0)
+    public  static function getProductDetailsById($Id,$quantity=0)
     {
         if(!empty(self::find($Id)))
         {
@@ -63,12 +62,9 @@ class ProductDetail extends Model
             if($quantity==1)
                 $product=self::where('Id',$Id)->get();
             return $product;
-        }
-
-        //throw new Exception("Error Processing Request");
-            
+        }            
     }
-    public static function likeProducts($value)
+    public static function getLikeProducts($value)
     {
         $products=self::where(
             function($query) use($value)
@@ -80,32 +76,27 @@ class ProductDetail extends Model
         return $products;
     }
 
-    public static function merchantProducts($merchantPhoneNumber)
+    public static function getMerchantAddedProducts($merchantPhoneNumber)
     {
         $products=self::where('merchant_phone_number',session('active_user'))->simplePaginate(12);
         return $products;
     }
-    public static function merchantProductIddetail($id)
-    {
-        $products=self::where('Id',$id)->simplePaginate(12);
-        return $products;
-    }
-    public static function productImagepath($id)
+    public static function getProductImagepath($id)
     {
         $imagePath=self::where('Id', $id)->get(['image_path'])[0]->imagePath;
         return $imagePath;
     }    
-    public static function deleteProduct($id)
+    public static function deleteProductById($id)
     {
         return self::where('Id', $id)->delete();
         
     }
-    public static function productQuantity($id)
+    public static function getProductQuantityById($id)
     {
         $quantity=self::where('Id',$id)->get(['quantity']);
         return $quantity;
     }
-    public static function updateProduct($id,$data)
+    public static function updateProductById($id,$data)
     {
         return self::where('Id',$id)->update($data);
     }  
@@ -114,5 +105,10 @@ class ProductDetail extends Model
         $products=self::skip($data['start'])->take($data['end'])->orderBy('product_name')->get();
         return $products;
     }  
+    // public static function getProductDetailsById($id)
+    // {
+    //     $products=self::where('Id',$id)->simplePaginate(12);
+    //     return $products;
+    // }
     
 }

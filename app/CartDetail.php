@@ -17,38 +17,50 @@ class CartDetail extends Model
     {
         return self::create($data);
     }
-    public static function productidQuantity($id)
+    public static function fetchProductQuantityFromId($id)
     {
-        $quantity=self::where('product_id',$id)->get(['quantity']);
+        $quantity=self::where('product_id',$id)
+            ->get(['quantity']);
         return $quantity;
     }
-    public static function updateCartitem($id,$quantity)
+    public static function updateCartItem($id,$quantity)
     {
-        return self::where('product_id',$id)->update(['quantity'=>$quantity]);
+        return self::where('product_id',$id)
+            ->update(['quantity'=>$quantity]);
     }
-    public static function cartProductDetails($user)
+    public static function fetchProductFromCart($user)
     {
-            $productCart= self::where('customercart_phone',$user)->select('Product_Details.Id','Product_Details.product_name','Product_Details.company_name','Product_Details.offer',
-                'Product_Details.image_path','Cart_Details.quantity','Product_Details.price','Product_Details.discount')
-                ->join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')->get();
+            $productCart= self::where('customercart_phone', $user)
+                ->select
+                (
+                    'Product_Details.Id',
+                    'Product_Details.product_name',
+                    'Product_Details.company_name',
+                    'Product_Details.offer',
+                    'Product_Details.image_path',
+                    'Cart_Details.quantity',
+                    'Product_Details.price',
+                    'Product_Details.discount'
+                )
+                ->join( 'Product_Details', 'Product_Details.Id', '=', 'Cart_Details.product_id' )
+                ->get();
             return $productCart;
     }
-    public static function productDetail($user,$field)
+    public static function getCartItemDetails( $user, $field)
     {
-        $productsIdQuantity= self::where('customercart_phone',$user)->get($field);
-        return $productsIdQuantity;
+        $productIdAndQuantity= self::where('customercart_phone',$user)->get($field);
+        return $productIdAndQuantity;
     }
     public static function deleteCartItems($user)
     {
         return self::where('customercart_phone',$user)->delete();
     }
-    public static function removeProduct($id)
+    public static function removeCartItem($id)
     {
         return  self::where('product_id',$id)->delete();
     }
-    public static function check($id)
+    public static function checkProductId($id)
     {
         return  self::where('product_id',$id)->get();
     }
-    //
 }

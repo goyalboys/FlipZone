@@ -23,12 +23,22 @@ class RegistrationFormValidation extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required|max:200',
-            'email_id' => 'required|email|unique:User_Details',
-            'phone_number'=> 'required|integer|unique:User_Details|digits:10',
-            'password' => 'required|min:6',
-            'password_confirmation' => 'required|min:6|same:password',
-        ];
+
+        switch($this->method())
+        {
+            case 'POST':
+                return [
+                    'name' => 'required|max:200',
+                    'email_id' => 'required|email|unique:User_Details',
+                    'phone_number'=> 'required|integer|unique:User_Details|digits:10',
+                    'password' => 'required|min:6',
+                    'password_confirmation' => 'required|min:6|same:password',
+                ];
+            case 'PUT':
+                return [
+                    'name' => 'required|max:200',
+                    'email_id' => 'required|email|unique:User_Details',
+                ];
+        }
     }
 }

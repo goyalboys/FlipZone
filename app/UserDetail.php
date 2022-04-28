@@ -26,17 +26,17 @@ class UserDetail extends Authenticatable
     {
         return self::create($data);
     }
-    public static function hashedPassword($data)
+    public static function getUserPassword($data)
     {
         $password=self::where('phone_number',$data)->get(['password']);
         return $password[0]['password'];
     }
-    public static function typeOFuser($data)
+    public static function typeOfUser($data)
     {
         $type_user=self::where('phone_number',$data)->get()[0]->type_of_user;
         return $type_user;
     }
-    public static function presentuserDetail($data)
+    public static function getActiveUserDetails($data)
     {
         $user=self::where('phone_number',$data)->get();
         return $user;

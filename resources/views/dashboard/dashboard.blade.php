@@ -33,6 +33,9 @@
         </div>
         <hr>
         @endforeach
+        <div id="product-links" class="d-flex justify-content-center">
+            {{$problems->links()}}
+        </div>
   </div>
 </div>
 @endsection
