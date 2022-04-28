@@ -25,12 +25,22 @@
                 </div>
                 <div class="col-sm-4">
                     <div style="text-align:center;">
-                        <a href="cancel_order/{{$order->orderId}}"> 
+                        <button type="delete" class="btn btn-primary" 
+                            onclick="event.preventDefault();document.getElementById('delete-form-{{ $order->orderId }}').submit();">
+                            Cancel Order
+                        </button>
+                                    
+                        <form id="delete-form-{{ $order->orderId }}" action="{{  route('cancelOrder', ['Id' => $order->orderId ]) }}"
+                            method="POST" style="display: none;">
+                            {{method_field('DELETE')}}
+                            {{ csrf_field() }}
+                        </form>
+                        <!-- <a href="cancel_order/{{$order->orderId}}"> 
 
                             <button type="button" class="btn btn-primary"  >
                                 Cancel Order
                             </button>
-                        </a>
+                        </a> -->
                     </div>
                     
                 </div>

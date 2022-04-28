@@ -30,7 +30,7 @@ class ProductFormValidation extends FormRequest
             'quantity' => 'required|max:99|integer',
             'discount' => 'required|integer|max:99',
             'company_name'=>'required|max:255',
-            'image'=>'required',
+            //'image'=>'required',
             'offer'=>'required',
         ];
     }

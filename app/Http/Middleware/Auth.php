@@ -15,9 +15,10 @@ class Auth
      */
     public function handle($request, Closure $next)
     {
+        echo "hi";
         if (!Auth::check()) 
             //return Redirect::route('dashboard');
 
-            return Redirect::route('login');
+            return Redirect('login');
     }
 }

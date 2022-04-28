@@ -6,14 +6,15 @@
         <div class="side_container">
             <h2 style="color:white;">services</h2><hr>
             <a href="#" aria-current="true">Add product</a><hr>
-            <a href="productdetails">Product Details</a><hr>
+            <a href="merchant_products">Product Details</a><hr>
             <a href="order_receive">Product Details</a><hr>
 
         </div>
     </div>
     <div id="column2">
         
-        <form class="row g-3" name="myForm" method="post" action='/edit_product_details/{{$id}}' enctype="multipart/form-data">
+        <form class="row g-3" name="myForm" method="post" action='/edit_product/{{$id}}'>
+            {{method_field('PUT')}}
             {{ csrf_field() }}
             <div class="col-md-6">
                 <label class="form-label">Product Name</label>

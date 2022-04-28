@@ -45,14 +45,6 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-    }
 
     /**
      * Create a new user instance after a valid registration.
@@ -63,10 +55,25 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $request->validate();
+        try
+        {  
+            UserDetail::addUser([
+                'name' =>$request->name,
+                'email_id' =>$request->email_id,
+                'phone_number' =>$request->phone_number,
+                'password'=>Hash::make($request->password),
+                'gender' =>$request->gender,
+                'type_of_user' =>$request->type_of_user
+            ]);
+            return redirect('login')->with('success',"Done!!");
+        }
+        catch(Exception $e)
+        {
+            $array = [
+                "error"=>$e->getMessage()
+            ];
+            return redirect('error')->withInput()->withErrors($array);
+        }
     }
 }

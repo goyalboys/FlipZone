@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Http\Middleware;
-use Auth;
+
 use Session;
 use Illuminate\Support\Facades\Redirect;
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class CustomAuth
 {
+    
     /**
      * Handle an incoming request.
      *
@@ -17,13 +19,12 @@ class CustomAuth
      */
     public function handle($request, Closure $next)
     {
-        /*
-        print_r(Auth::user());
+        
+      /* dd(Auth::User());
         if(!Auth::check())
         {
             echo "hello";
             //return "hello";
-
         }
         echo "hi";
 */
@@ -36,13 +37,12 @@ class CustomAuth
         else{
             if(Session::get('type_user')=="merchant")
             {
-                redirect('merchant_dashboard');
+                redirect('dashboard');
             }
             else{
                 redirect('/');
 
             }
-             
         }
         return $next($request);
     }

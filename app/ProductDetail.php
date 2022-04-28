@@ -26,31 +26,28 @@ class ProductDetail extends Model
     }
     public static function showLimitedProduct($data)
     {
-        $product=self::all()->where('quantity','>','0')->take($data);
+        $product=self::where('quantity','>','0')->simplePaginate($data);
         return $product;
     }
     public static function allProducts($price1=0,$price2=0,$type=0)
     {
-        if($type==0)
+        $product=new ProductDetail;
+        $product=$product->where('quantity','>','0');
+        //dd($product);
+        if($type!=0)
         {
-            $product=self::where('quantity','>','0')->simplePaginate(12);
+            $product=$product->where('price','>',$price1)->where('price','<',$price2);
         }
-        if($type==1)
+        switch($type)
         {
-            $product=self::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
-            ->orderBy('price')->simplePaginate(12);
+            case 1:
+                $product=$product->orderBy('price');
+                break;
+            case 2:
+                $product=$product->orderBy('price','desc');
+                break;
         }
-        if($type==2)
-        {
-            $product=self::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
-            ->orderBy('price','desc')->simplePaginate(12);
-        }
-        if($type==3)
-        {
-            $product= self::where('price','>',$price1)->where('price','<',$price2)->where('quantity','>','0')
-            ->simplePaginate(12);
-        }
-        return $product;
+        return $product->simplePaginate(12);
     }
     public static function productDiscount($discount)
     {
@@ -75,21 +72,22 @@ class ProductDetail extends Model
     {
         $products=self::where(
             function($query) use($value)
-            {$query->where('product_name','like','%'.$value.'%')
+            {   $query->where('product_name','like','%'.$value.'%')
                 ->orWhere('company_name', 'like', '%'.$value.'%')
-                ->orWhere('description', 'like', '%'.$value.'%');})
+                ->orWhere('description', 'like', '%'.$value.'%');
+            })
                 ->where('quantity','>','0')->limit(5)->get();
         return $products;
     }
 
     public static function merchantProducts($merchantPhoneNumber)
     {
-        $products=self::all()->where('merchant_phone_number',session('active_user'));
+        $products=self::where('merchant_phone_number',session('active_user'))->simplePaginate(12);
         return $products;
     }
     public static function merchantProductIddetail($id)
     {
-        $products=self::all()->where('Id',$id);
+        $products=self::where('Id',$id)->simplePaginate(12);
         return $products;
     }
     public static function productImagepath($id)
@@ -113,7 +111,7 @@ class ProductDetail extends Model
     }  
     public static function showProductspaginate($data)
     {
-        $products=self::skip($data['start'])->take($data['end'])->get();
+        $products=self::skip($data['start'])->take($data['end'])->orderBy('product_name')->get();
         return $products;
     }  
     

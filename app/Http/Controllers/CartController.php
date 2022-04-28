@@ -6,34 +6,52 @@ use Illuminate\Http\Request;
 Use App\CartDetail;
 Use App\ProductDetail;
 use Exception;
+use Illuminate\Support\Facades\DB;
 class CartController extends Controller
 {
-    function cart($id)
+    function cartItems()
     {
         try
         {
-            $quantity = CartDetail::productidQuantity($id);
-            //echo $quantity;
+            $products= CartDetail::cartProductDetails(['customercart_phone'=>session('active_user')]);
         }
         catch(Exception $e)
         {
-            $array = [
-                "error"=>$e->getMessage()
-            ];
+            $array = [ "error"=>$e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
-            
+        }
+        return view('cart.cart',['product_cart'=>$products]);
+    }
+
+    function cartAddItem($id)
+    {
+        try
+        {
+
+            $quantity = CartDetail::productidQuantity($id);
+            if(empty($quantity))
+            {
+                $array = [ "known_error"=>"invalid page" ];
+                return redirect('error')->withInput()->withErrors($array);
+            }
+        }
+        catch(Exception $e)
+        {
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
         }
         if(count($quantity)==0)
         {
             try
             {
+                DB::beginTransaction();
                 CartDetail::insertData( ['customercart_phone'=>session('active_user'),'product_id'=>$id,'quantity'=>1]);
+                DB::Commit();
             }
             catch(Exception $e)
             {
-                $array = [
-                    "error"=>$e->getMessage()
-                ];
+                DB::rollback();
+                $array = [ "error"=>$e->getMessage() ];
                 return redirect('error')->withInput()->withErrors($array);
             }
         }
@@ -41,45 +59,30 @@ class CartController extends Controller
         {
             try
             {
-                CartDetail::updateCartitem($id,$quantity[0]->quantity+1); 
-            }
+                DB::beginTransaction();
+                CartDetail::updateCartitem($id,$quantity[0]->quantity+1);
+                DB::Commit();
+            } 
             catch(Exception $e)
             {
-                $array = [
-                    "error"=>$e->getMessage()
-                ];
+                DB::rollback();
+                $array = [ "error"=>$e->getMessage() ];
                 return redirect('error')->withInput()->withErrors($array);
             }
         }
         return redirect("product/$id")->with('success',"Added to cart!!");
     }
-    function cartItems()
-    {
-        try
-        {
-            $products= CartDetail::cartInnerjoinProductDetails();
-            return view('cart',['product_cart'=>$products]);
-        }
-        catch(Exception $e)
-        {
-            $array = [
-                "error"=>$e->getMessage()
-            ];
-            return redirect('error')->withInput()->withErrors($array);
-        }
-    }
+    
 
     function checkOutcart()
     {
         try
         {
-            $product_cart= CartDetail::cartInnerjoinProductDetails();
+            $product_cart= CartDetail::cartProductDetails(['customercart_phone'=>session('active_user')]);
         }
         catch(Exception $e)
         {
-            $array = [
-                "error"=>$e->getMessage()
-            ];
+            $array = [ "error"=>$e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
         $price=0;
@@ -87,19 +90,26 @@ class CartController extends Controller
         {
             $price+=$product->price-($product->price*$product->discount/100);
         }
-        return view('checkoutcart',['products'=>$product_cart,'totalprice'=>$price]);
+        return view('cart.checkoutcart',['products'=>$product_cart,'totalprice'=>$price]);
      }
+
      function removeFromcart($id)
      {
         try
         {
+            if(empty(CartDetail::check($id)))
+            {
+                $array = [ "error"=>"Do not exit in cart" ];
+                return redirect('known_error')->withInput()->withErrors($array);
+            }
+            DB::beginTransaction();
             CartDetail::removeProduct($id);
+            DB::Commit();
         }
         catch(Exception $e)
         {
-            $array = [
-                "error"=>$e->getMessage()
-            ];
+            DB::rollback();
+            $array = [ "error"=>$e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
         return redirect('cart');

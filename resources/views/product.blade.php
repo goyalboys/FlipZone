@@ -30,8 +30,21 @@
             <b>Quantity: </b>{{$product[0]->quantity}}<br>
             </h3>
         </div>
-        <div style="text-align:center;"><a href="../checkout/{{$product[0]->Id}}"><button type="button" class="btn btn-primary"  > Buy Now</button></a></div>
-        <div ><a href="../cart/{{$product[0]->Id}}"><button type="button" class="btn btn-primary"  > Add to cart</button></a></div>
+        <div style="text-align:center;"><a href="../order/{{$product[0]->Id}}"><button type="button" class="btn btn-primary"  > Buy Now</button></a></div>
+
+
+
+        <button type="submit" class="btn btn-primary" 
+            onclick="event.preventDefault();document.getElementById('Add-form-{{ $product[0]->Id }}').submit();">
+             Add to cart
+        </button>
+                    
+        <form id="Add-form-{{ $product[0]->Id }}" action="{{  route('addProductToCart', ['Id' => $product[0]->Id]) }}"
+            method="POST" style="display: none;">
+            {{method_field('PUT')}}
+            {{ csrf_field() }}
+        </form>
+        <!-- <div ><a href="../cart/{{$product[0]->Id}}"><button type="button" class="btn btn-primary"  > Add to cart</button></a></div> -->
     </div>
 
 </div>

@@ -11,6 +11,7 @@
             Change Password
         </h2>
         <form name="editForm" method="post" action='/update_password'>
+        {{method_field('PUT')}}
          {{ csrf_field() }}
             <label>Old Password</label><br>
             <input type="password" name="old_password" value="{{ old('old_password') }}" autocomplete="off">

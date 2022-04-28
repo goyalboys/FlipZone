@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div style="text-align:center;">
-                        <a href="../editproduct/{{$product->Id}}">  
+                        <a href="../edit_product/{{$product->Id}}">  
                             <button type="button" class="btn btn-primary"  >
                                 Edit Product
                             </button>
@@ -40,9 +40,17 @@
                     </div>
                     <br>
                     <div style="text-align:center;">
-                        <a href="../deleteproduct/{{$product->Id}}">  
-                            <button type="delete" class="btn btn-primary">Delete</button>
-                        </a>
+                        <!-- <a href="../deleteproduct/{{$product->Id}}">   -->
+                        
+                        <button type="delete" class="btn btn-primary" 
+                            onclick="event.preventDefault();document.getElementById('delete-form-{{ $product->Id }}').submit();">
+                         Delete
+                        </button>
+                        <form id="delete-form-{{ $product->Id }}" action="{{  route('delete_product', ['Id' => $product->Id]) }}"
+                            method="POST" style="display: none;">
+                            {{method_field('Delete')}}
+                            {{ csrf_field() }}
+                        </form>
                     </div>
                 </div>
             </div>

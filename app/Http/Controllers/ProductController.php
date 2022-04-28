@@ -18,9 +18,7 @@ class ProductController extends Controller
         }
         catch(Exception $e)
         {
-           $array = [
-               "error"=>$e->getMessage()
-           ];
+           $array = [ "error"=>$e->getMessage() ];
            return redirect('error')->withInput()->withErrors($array);
         }
         return view('products',['products'=>$products,'companies'=>$companies,'offers'=>$offers,'discounts'=>$discounts]);
@@ -34,9 +32,7 @@ class ProductController extends Controller
         }
         catch(Exception $e)
         {
-           $array = [
-               "error"=>$e->getMessage()
-           ];
+           $array = [ "error"=>$e->getMessage() ];
            return redirect('error')->withInput()->withErrors($array);
         }
         return response()->json(['products' => $products]);
@@ -46,14 +42,12 @@ class ProductController extends Controller
     {
         try
         {
-            $products=ProductDetail::allProducts($request['price1'],$request['price2'],1);      // 1 for LOW TO HIGH 
+            $products=ProductDetail::allProducts(1,1000,1);      // 1 for LOW TO HIGH 
         }
         catch(Exception $e)
         {
-            $array = [
-                "error"=>$e->getMessage()
-            ];
-            return redirect('error')->withInput()->withErrors($array);
+            $array = [ "error"=>$e->getMessage() ];
+            //return redirect('error')->withInput()->withErrors($array);
         }
 
         return response()->json(['products' => $products]);
@@ -68,9 +62,7 @@ class ProductController extends Controller
         }
         catch(Exception $e)
         {
-           $array = [
-               "error"=>$e->getMessage()
-           ];
+           $array = [ "error"=>$e->getMessage() ];
            return redirect('error')->withInput()->withErrors($array);
         }
         return response()->json(['products' => $products]);
@@ -86,12 +78,16 @@ class ProductController extends Controller
     {
         try{
             $product=ProductDetail::productIddetail($Id);
+            if(empty($product))
+                {
+                    $array = [ "error"=>"Page Doesnot Exit" ];
+                    return redirect('error')->withInput()->withErrors($array);
+                }
+
         }
         catch(Exception $e)
         {
-           $array = [
-               "error"=>$e->getMessage()
-           ];
+           $array = [ "error"=>$e->getMessage() ];
            return redirect('error')->withInput()->withErrors($array);
         }
         return view('product',['product'=>$product]);
@@ -104,9 +100,7 @@ class ProductController extends Controller
         }
         catch(Exception $e)
         {
-           $array = [
-               "error"=>$e->getMessage()
-           ];
+           $array = [ "error"=>$e->getMessage() ];
            return redirect('error')->withInput()->withErrors($array);
         }
         return response()->json(['products' => $products]);
@@ -120,9 +114,7 @@ class ProductController extends Controller
         }
         catch(Exception $e)
         {
-           $array = [
-               "error"=>$e->getMessage()
-           ];
+           $array = [ "error"=>$e->getMessage() ];
            return redirect('error')->withInput()->withErrors($array);
         }
         return response()->json(['item' => $products]);

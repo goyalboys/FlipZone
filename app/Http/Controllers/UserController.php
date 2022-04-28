@@ -8,15 +8,24 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\session;
 use Exception;
 use App\Http\Requests\RegistrationFormValidation;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    function register()
+    {
+        return view('register');
+    }
+    function login(){
+        return view('login');
+    }
     function userRegistration(RegistrationFormValidation $request)
     {
-
         $request->validate();
         try
-        {  
+        { 
+            DB::beginTransaction();
             UserDetail::addUser([
                 'name' =>$request->name,
                 'email_id' =>$request->email_id,
@@ -25,15 +34,15 @@ class UserController extends Controller
                 'gender' =>$request->gender,
                 'type_of_user' =>$request->type_of_user
             ]);
-            return redirect('login')->with('success',"Done!!");
+            DB::Commit();
         }
         catch(Exception $e)
         {
-            $array = [
-                "error"=>$e->getMessage()
-            ];
+            DB::rollback();
+            $array = [ "error"=>$e->getMessage() ];
             return redirect('error')->withInput()->withErrors($array);
         }
+        return redirect('login')->with('success',"Done!!");
     }
 
     function userLogin(Request $request)
@@ -55,18 +64,23 @@ class UserController extends Controller
                 $normalPassword= $request->password;
                 if(Hash::check($normalPassword,$hashedPassword))
                 {
-                   // Auth::
+                   
                     session(['active_user' =>$request->phone_number]);
                     $type_user=UserDetail::typeOFuser($request->phone_number);
                     session(['type_user' =>$type_user]);
-                    if($type_user=='merchant')
+                    //login(\Illuminate\Contracts\Auth\Authenticatable $user, bool $remember = false);
+                    if(Auth::attempt($request->only('phone_number','password')))
                     {
-                        return redirect('merchant_dashboard');
-                    }
-                    else
-                    {
-                        return redirect('/');
-                    }
+                        if($type_user=='merchant')
+                        {
+                            echo Auth::User();
+                            return redirect('dashboard');
+                        }
+                        else
+                        {
+                            return redirect('/');
+                        }
+                    }  
                 }
                 else
                 {
@@ -75,9 +89,7 @@ class UserController extends Controller
             }
             catch(Exception $e)
             {
-                $array = [
-                    "error"=>$e->getMessage()
-                ];
+                $array = [ "error"=>$e->getMessage() ];
                 return redirect('error')->withInput()->withErrors($array);
             }
         }
@@ -90,7 +102,17 @@ class UserController extends Controller
 
     function editProfile()
     {
-       $user= UserDetail::presentuserDetail(session('active_user'));
+        try
+        {
+            $user= UserDetail::presentuserDetail(session('active_user'));
+        }
+        catch(Exception $e)
+        {
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
+        }
+        
+       
         return view('edit_profile',['user'=>$user[0]]);
     }
     function changePassword()
@@ -109,8 +131,20 @@ class UserController extends Controller
         }
         else
         {
-            UserDetail::updateProfile(session('active_user'),['name' =>$request->name,'email_id' =>$request->email_id,
-            'gender' =>$request->gender,'type_of_user' =>$request->type_of_user]);
+            try
+            {
+                DB::beginTransaction();
+                UserDetail::updateProfile(session('active_user'),['name' =>$request->name,'email_id' =>$request->email_id,
+                    'gender' =>$request->gender,'type_of_user' =>$request->type_of_user]);
+                DB::Commit();
+            }
+            catch(Exception $e)
+            {
+                DB::rollback();
+                $array = [ "error"=>$e->getMessage() ];
+                return redirect('error')->withInput()->withErrors($array);
+            }
+            
             return redirect('/');
         }
     }
@@ -134,14 +168,22 @@ class UserController extends Controller
             if(Hash::check($normalPassword,$hashedPassword))
             {
                 $password=Hash::make($request->password);
-                UserDetail::changePassword(session('active_user'),['password'=>$password]);
+                try{
+                    DB::beginTransaction();
+                    UserDetail::changePassword(session('active_user'),['password'=>$password]);
+                    DB::Commit();
+                }
+                catch(Exception $e)
+                {
+                    DB::rollback();
+                    $array = [ "error"=>$e->getMessage() ];
+                    return redirect('error')->withInput()->withErrors($array);
+                }
                 return redirect('/');
             }
             else
             {
-                $array = [
-                    "old_password"=>"old password is not correct"
-                ];
+                $array = [ "old_password"=>"old password is not correct" ];
                 return redirect('change_password')-> withInput()-> withErrors($array);
             }
         }

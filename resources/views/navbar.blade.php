@@ -39,7 +39,7 @@
           <li class="nav-item">
             @php
             if (session('type_user')=='merchant')
-              echo '<li class="nav-item"><a class="nav-link" href="'.url('merchant_dashboard').'">Dashboard</a></li>';
+              echo '<li class="nav-item"><a class="nav-link" href="'.url('dashboard').'">Dashboard</a></li>';
             else
               echo '<li class="nav-item"><a class="nav-link" href="'.url('contact_us').'">Contact Us</a></li>';
             if (session('active_user'))

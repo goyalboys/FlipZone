@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-
+use App\ProductDetail;
 
 class OrderDetail extends Model
 {
@@ -30,7 +30,7 @@ class OrderDetail extends Model
     public static function ordersproductdetails($user)
     {
         $orders=self::join('Product_Details','Product_Details.Id','=','Order_Details.product_id')
-        ->where('customer_phone',$user)->get();
+            ->where('customer_phone',$user)->get();
         return $orders;
     }
     public static function deleteOrder($id)
@@ -42,13 +42,15 @@ class OrderDetail extends Model
         $product_id=self::where('orderId',$id)->get(['product_id']);
         return $product_id[0]->product_id;
     }
-    public static function product()
+    public function product()
     {
-        return $this->belongsTo('ProductDetail');
+        return self::belongsToMany('App\ProductDetail');
+       // return self::belongsToMany(ProductDetail::class, 'Id', 'product_id');
+
+        
     }
     public static function orderDetail($id)
     {
         return self::where('orderId',$id)->get();
-
     }
 }

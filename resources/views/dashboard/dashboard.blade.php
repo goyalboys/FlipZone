@@ -6,7 +6,7 @@
         <div class="side_container">
             <h2 style="color:white;">services</h2><hr>
             <a href="add_product" aria-current="true">Add product</a><hr>
-            <a href="productdetails">Product Details</a><hr>
+            <a href="merchant_products">Product Details</a><hr>
             <a href="order_receive">Orders Recieved</a><hr>
         </div>
     </div>
@@ -20,7 +20,15 @@
                     <b>Problem:</b>{{$problem->problem}}<br>
                 </div>
             <div class="col-sm-4">
-                <a href="../resolved/{{$problem->contactId}}"><button type="button" class="btn btn-primary"  > Resolved</button></a>
+                <button type="delete" class="btn btn-primary" 
+                    onclick="event.preventDefault();document.getElementById('delete-form-{{ $problem->contactId }}').submit();">
+                    Delete
+                </button>
+                <form id="delete-form-{{ $problem->contactId  }}" action="{{  route('delete_ticket', ['Id' => $problem->contactId ]) }}"
+                    method="POST" style="display: none;">
+                    {{method_field('Delete')}}
+                    {{ csrf_field() }}
+                </form>
             </div>
         </div>
         <hr>

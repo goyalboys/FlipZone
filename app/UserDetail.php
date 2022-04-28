@@ -5,9 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
-class UserDetail extends Model
+
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class UserDetail extends Authenticatable
 {
-    
+    use Notifiable;
     protected $fillable = [
         'name', 
         'password', 

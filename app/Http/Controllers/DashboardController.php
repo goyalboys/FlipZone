@@ -11,25 +11,30 @@ Use Exception;
 use App\Ticket;
 use App\Http\Requests\ProductFormValidation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 class DashboardController extends Controller
 {
-    
     function addProduct(ProductFormValidation $request)
     {
         $request->validate();
         try
         {
+            DB::beginTransaction();
             ProductDetail::insertProduct(['description' =>$request->description,'product_name' =>$request->product_name,
             'company_name' =>$request->company_name,'offer' =>$request->offer,'discount' =>$request->discount,
             'price' =>$request->price,'quantity' =>$request->quantity,'merchant_phone_number' =>session('active_user'),
             'image_path'=> $request->image->hashName()]);
             $request->image->store('public');
-            return redirect('productdetails')->with('success',"Done!!");
+            DB::Commit();
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            DB::rollback();
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
         }
+        return redirect('merchant_products')->with('success',"Done!!");
         
     }
     function productDetails()
@@ -37,12 +42,13 @@ class DashboardController extends Controller
         try
         {
             $products=Productdetail::merchantProducts(session('active_user'));
-            return view('productdetails',['products'=>$products]);
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
         }
+        return view('dashboard.products',['products'=>$products]);
     }
 
 
@@ -51,74 +57,117 @@ class DashboardController extends Controller
         try
         {
             $products=ProductDetail::merchantProductIddetail($id);
-            foreach($products as $product)
-                return view('edit_product_details',['product'=>$product,'id'=>$id]);
+            echo $products;
+            if(empty($products))
+                {
+                    $array = [ "error"=>"Page Doesnot Exit" ];
+                    return redirect('error')->withInput()->withErrors($array);
+                }
         }
         catch(exception $e)
         {
-            dd($e->getMessage());
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
         }
+        foreach($products as $product)
+            return view('dashboard.edit_product',['product'=>$product,'id'=>$id]);
     }
 
-    function editProductDetail(ProductFormValidation $request,$id)
+    function editProductDetails(ProductFormValidation $request,$id)//requeset form should be custom
     {
         $request->validate();
         try
         {
+            $products=ProductDetail::merchantProductIddetail($id);
+            if(empty($products))
+                {
+                    $array = [ "error"=>"Page Doesnot Exit" ];
+                    return redirect('error')->withInput()->withErrors($array);
+                }
+            DB::beginTransaction();
             ProductDetail::updateProduct($id,['description'=>$request->description,'product_name'=>$request->product_name,
-            'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,
-            'quantity'=>$request->quantity]);
-            return redirect('productdetails')->with('success',"Done!!");
+                'company_name'=>$request->company_name,'offer'=>$request->offer,'discount'=>$request->discount,'price'=>$request->price,
+                'quantity'=>$request->quantity]);
+            DB::Commit();
+            
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            DB::rollback();
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
         }
+        return redirect('merchant_products')->with('success',"Done!!");
     }
 
     function deleteProduct($id)
-    {
+    { 
         try
         {
+            $products=ProductDetail::merchantProductIddetail($id);
+            if(empty($products))
+                {
+                    $array = [ "error"=>"Page Doesnot Exit" ];
+                    return redirect('error')->withInput()->withErrors($array);
+                }
             $imagePath = "storage/".ProductDetail::productImagepath($id);
-            try
-            {
-                ProductDetail::deleteProduct($id);
-                File::delete($imagePath);
-            }
-            catch(Exception $e)
-            {
-                dd($e->getMessage());
-            }
-            return redirect('productdetails')->with('success',"Done!!");
+            DB::beginTransaction();
+            ProductDetail::deleteProduct($id);
+            File::delete($imagePath);
+            DB::Commit();
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            DB::rollback();
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
         }
+        return redirect('merchant_products')->with('success',"Done!!");
     }
 
     function resolved($id)
     {
         try
         {
-        Ticket::deleteTicket($id);
+            if(empty(Ticket::Ticket($id)))
+            {
+                $array = [ "error"=>"Ticket not exits" ];
+                return redirect('error')->withInput()->withErrors($array);
+            }
+            DB::beginTransaction();
+            Ticket::deleteTicket($id);
+            DB::Commit();
         }
         catch(Exception $e)
         {
-            dd($e->getMessage());
+            DB::rollback();
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
         }
-        return redirect('merchant_dashboard');
+        return redirect('dashboard');
+    }
+    function orderReceived()
+    {
+        try
+        {
+            $orders=OrderDetail::ordersproductdetails(session('active_user'));
+        }
+        catch(Exception $e)
+        {
+            $array = [ "error"=>$e->getMessage() ];
+            return redirect('error')->withInput()->withErrors($array);
+        }
+        return view('dashboard.order_receive',['products'=>$orders]);
     }
 
     function dashboard()
     {
-        return view('merchant_dashboard',['problems'=>Ticket::allTicket()]);
+        return view('dashboard.dashboard',['problems'=>Ticket::allTicket()]);
     }
 
     function ProductPage()
     {
-        return view('add_product_detail');
+        return view('dashboard.add_product');
     }
     
 }

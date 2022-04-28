@@ -10,8 +10,9 @@
             Edit Here
         </h2>
         <form name="editForm" method="post" action='/update_profile'>
-         {{ csrf_field() }}
-         <label>User Type: </label><br>
+        {{method_field('PUT')}}
+        {{ csrf_field() }}
+        <label>User Type: </label><br>
             <select name="type_of_user" >
              <option value="merchant" {{ $user->type_of_user == "merchant" ? 'selected' : '' }}> Merchant</option>
              <option value="user" {{ $user->type_of_user == "user" ? 'selected' : '' }}>Customer</option>

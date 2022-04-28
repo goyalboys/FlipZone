@@ -26,12 +26,22 @@
                     </div>
                     <div class="col-sm-4">
                     <div style="text-align:center;">
-                        <a href="removefromcart/{{$product->Id}}"> 
+                        <button type="delete" class="btn btn-primary" 
+                            onclick="event.preventDefault();document.getElementById('delete-form-{{ $product->Id }}').submit();">
+                            Remove
+                        </button>
+                                    
+                        <form id="delete-form-{{ $product->Id }}" action="{{  route('removeFromCart', ['Id' => $product->Id]) }}"
+                            method="POST" style="display: none;">
+                            {{method_field('DELETE')}}
+                            {{ csrf_field() }}
+                        </form>
+                        <!-- <a href="removefromcart/{{$product->Id}}"> 
 
                             <button type="button" class="btn btn-primary"  >
                                 Remove
                             </button>
-                        </a>
+                        </a> -->
                 </div>
             </div>
                 </div>

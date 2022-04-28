@@ -15,7 +15,7 @@ class CartDetail extends Model
 
     public static function insertData($data)
     {
-        return self::create($data);;
+        return self::create($data);
     }
     public static function productidQuantity($id)
     {
@@ -24,27 +24,31 @@ class CartDetail extends Model
     }
     public static function updateCartitem($id,$quantity)
     {
-        return self::where('product_id',$id)->update(['quantity'=>$quantity]);;
+        return self::where('product_id',$id)->update(['quantity'=>$quantity]);
     }
-    public static function cartProductDetails()
+    public static function cartProductDetails($user)
     {
-            $productCart= self::join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')
-            ->select('Product_Details.Id','Product_Details.product_name','Product_Details.company_name','Product_Details.offer',
-            'Product_Details.image_path','Cart_Details.quantity','Product_Details.price','Product_Details.discount')->get();
+            $productCart= self::where('customercart_phone',$user)->select('Product_Details.Id','Product_Details.product_name','Product_Details.company_name','Product_Details.offer',
+                'Product_Details.image_path','Cart_Details.quantity','Product_Details.price','Product_Details.discount')
+                ->join('Product_Details','Product_Details.Id','=','Cart_Details.product_id')->get();
             return $productCart;
     }
-    public static function productidQuantityId($user)
+    public static function productDetail($user,$field)
     {
-        $productsIdQuantity= self::where('customercart_phone',$user)->get(['product_id','quantity']);
+        $productsIdQuantity= self::where('customercart_phone',$user)->get($field);
         return $productsIdQuantity;
     }
     public static function deleteCartItems($user)
     {
-        return self::where('customercart_phone',$user)->delete();;
+        return self::where('customercart_phone',$user)->delete();
     }
     public static function removeProduct($id)
     {
-        return  self::where('product_id',$id)->delete();;
+        return  self::where('product_id',$id)->delete();
+    }
+    public static function check($id)
+    {
+        return  self::where('product_id',$id)->get();
     }
     //
 }

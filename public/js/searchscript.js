@@ -14,7 +14,7 @@ function showResult(value)
       else{
         $.ajax({
             url:"searchproduct",
-            type:"post",
+            type:"get",
             data:{'value':value},
             dataType:'json',
             //data:'_token = <?php echo csrf_token() ?>',
